@@ -93,7 +93,7 @@ const Watch = () => {
   var idUser = removeQuote(localStorage.getItem('IdUser'))
 
   useEffect(() => {
-    const url = `http://192.168.1.9:8080/auth/${idUser}`
+    const url = `https://brave-red-blazer.cyclic.app/auth/${idUser}`
     fetch(url)
       .then(response => response.json())
       .then(json => json)
@@ -116,7 +116,7 @@ const Watch = () => {
 
 
     var xmlhttp = new XMLHttpRequest();
-    var url = `http://192.168.1.9:8080/auth/cinewatch/${idMovie}`;
+    var url = `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`;
 
     var avatarOne = "nPO29qu.jpeg";
     var avatarTwo = "oYBkmhj.jpeg";
@@ -164,7 +164,7 @@ const Watch = () => {
 
 
     var xmlhttp = new XMLHttpRequest();
-    var url = `http://192.168.1.9:8080/auth/cinewatch/${idMovie}`;
+    var url = `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`;
 
     var avatarOne = "nPO29qu.jpeg"
 

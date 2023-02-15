@@ -25,7 +25,7 @@ function usePlayerState($VideoPlayer) {
   var idUser = removeQuote(localStorage.getItem('IdUser'))
 
   useEffect(() => {
-    const url = `http://192.168.1.9:8080/auth/${idUser}`
+    const url = `https://brave-red-blazer.cyclic.app/auth/${idUser}`
     fetch(url)
       .then(response => response.json())
       .then(json => json)
@@ -46,7 +46,7 @@ function usePlayerState($VideoPlayer) {
 
 
   useEffect(() => {
-    const url = `http://192.168.1.9:8080/auth/cinewatch/${idmv}`
+    const url = `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idmv}`
     fetch(url)
       .then(response => response.json())
       .then(json => json)

@@ -21,7 +21,7 @@ function Profile() {
   const [userUtility, setuserUtility] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.1.9:8080/auth/${user}`)
+    fetch(`https://brave-red-blazer.cyclic.app/auth/${user}`)
       .then(response => response.json())
       .then(json => json)
       .then(async (data) => {
@@ -98,7 +98,7 @@ function Profile() {
     var userContent;
 
     var xmlhttp = new XMLHttpRequest();
-    var url = `http://192.168.1.9:8080/auth/${user}`;
+    var url = `https://brave-red-blazer.cyclic.app/auth/${user}`;
 
     xmlhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -131,7 +131,7 @@ function Profile() {
       var userContent;
 
     var xmlhttp = new XMLHttpRequest();
-    var url = `http://192.168.1.9:8080/auth/${user}`;
+    var url = `https://brave-red-blazer.cyclic.app/auth/${user}`;
 
     xmlhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {

@@ -17,7 +17,7 @@ function App() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.1.9:8080/auth/${user}`)
+    fetch(`https://brave-red-blazer.cyclic.app/auth/${user}`)
       .then(response => response.json())
       .then(json => json.watchlist)
       .then(async (data) => {
@@ -52,7 +52,7 @@ function App() {
         />
         <Resume
           name={"Continuar Assistindo"}
-          titles={`http://192.168.1.9:8080/auth/${user}`}
+          titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
         />
         <SimpleCarouselTitles
           name={"Estrangeiros"}
@@ -64,7 +64,7 @@ function App() {
         />
         <MyList
           name={"Minha Lista"}
-          titles={`http://192.168.1.9:8080/auth/${user}`}
+          titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
         />
       </div>
       <Footer/>
