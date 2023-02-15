@@ -1,0 +1,148 @@
+.backdrop{
+    width: 290px;
+    border-radius: 2px;
+}
+
+.solo-back-resume{
+    padding: 3px;
+    width: 290px;
+    height: 163px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(255, 245, 102, 0);
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.solo-back-resume:hover{
+    padding: 3px;
+    width: 290px;
+    height: 163px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgb(255, 245, 102);
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 3px rgb(255, 245, 102);
+}
+
+.slowman{
+    height: 45px;
+}
+
+.button-wachlist-resume{
+    border-radius: 100px;
+    width: 32px;
+    height: 31px;
+    margin-left: 260px;
+    margin-top: -40px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 245, 102, 0);
+    transition: 0.3s;
+    margin-top: -43px;
+}
+
+
+.button-wachlist-resume:hover{
+    background-color: rgba(0, 0, 0, 0.103);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(255, 245, 102);
+    margin-top: -43px;
+}
+
+
+.add-list{
+    display: flex;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0);
+    padding: 8px;
+    transition: 0.3s;
+}
+
+.content-card-movie-resume{
+    background-color: rgba(0, 0, 0, 0.103);
+}
+
+.content-card-movie-resume:hover .add-list{
+    color: rgb(255, 245, 102);
+}
+
+
+.rating-movie{
+    cursor: pointer;
+    display: flex;
+    color: rgba(0, 0, 0, 0);
+    padding: 8px;
+    padding-left: 15px;
+    margin-top: -5px;
+    transition: 0.3s;
+    font-weight: normal;
+}
+
+.content-card-movie-resume:hover .rating-movie{
+    color: rgb(255, 245, 102);
+}
+
+.play-movie{
+    cursor: pointer;
+    display: flex;
+    color: rgba(255, 245, 102, 0);
+    padding: 8px;
+    padding-left: 33%;
+    padding-right: 50%;
+    margin-top: -34px;
+    transition: 0.3s;
+}
+
+
+.resume-movie-resume{
+    cursor: pointer;
+    display: flex;
+    color: rgb(255, 245, 102);
+    padding: 8px;
+    padding-left: 23%;
+    padding-right: 50%;
+    margin-top: -34px;
+    transition: 0.3s;
+}
+
+.watch-now-title-resume-resume{
+    margin-top: -28px;
+    margin-left: 92px;
+    color: rgb(255, 245, 102);
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+
+.current-percentage-background-resume{
+    width: 98%;
+    height: 3px;
+    background-color: rgba(0, 0, 0, 0.863);
+    margin-top: -6px;
+    position:static;
+    margin-left: 4px;
+    border-radius: 15px;
+}
+
+.current-percentage-resume{
+    height: 3px;
+    background-color: rgb(255, 245, 102);
+    border-radius: 15px;
+}
+
+.add-list-click{
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0);
+    padding: 8px;
+    transition: 0.3s;
+    width: 100px;
+    color: aqua;
+}
+
+.content-card-movie-resume:hover .add-list-click{
+    color: rgb(255, 245, 102);
+}

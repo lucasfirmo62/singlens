@@ -1,0 +1,192 @@
+.boxer-sign-up {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 13%;
+    color: white;
+}
+
+.boxer-sign-up p{
+    font-size: 23px;
+    position:absolute;
+}
+
+.boxer-login p{
+    color: rgb(255, 245, 102);
+    font-size: 17px;
+}
+
+.content-form-sign-up {
+    width: auto;
+    padding: 70px;
+    background-color: rgba(0, 0, 0, 0.205);
+    border-radius: 4px;
+    position: absolute;
+    margin-top: 200px;
+}
+
+.coll {
+    padding: 8px;
+}
+
+.content-form-sign-up input {
+    font-size: 19px;
+    background-color: rgb(17, 31, 17);
+    padding: 6px;
+    border-radius: 3px;
+    color: white;
+    transition: 0.4s;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(255, 245, 102, 0);
+    margin-left: -40px;
+}
+
+.content-form-sign-up input::selection {
+    border-style: solid;
+    border-radius: 4px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    background-color: rgb(67, 148, 67);
+}
+
+.content-form-sign-up button {
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(240, 248, 255, 0);
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.content-form-sign-up button:hover {
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    cursor: pointer;
+}
+
+
+
+.background-img {
+    opacity: 0.2;
+    filter: blur(5px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+
+img {
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+.content-info {
+    margin-top: 100px;
+    position: absolute;
+}
+
+.apresentation {
+    display: flex;
+    padding: 30px;
+}
+
+.synopsis {
+    width: 50%;
+    padding-left: 40px;
+    padding-top: 50px;
+}
+
+.button-big {
+    padding-left: 10px;
+    padding-top: -60px;
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    width: 100px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+
+}
+
+
+.button-big:hover {
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    cursor: pointer;
+}
+
+.stage-one p{
+    top: 2px;
+    left: 108px;
+}
+
+.stage-two{
+    display: none;
+}
+
+.stage-two p{
+    top: 2px;
+    left: 108px;
+}
+
+
+.stage-three{
+    display: none;
+}
+
+.stage-three p{
+    top: 2px;
+    left: 330px;
+}
+
+.avatars-select{
+    width: 60%;
+}
+
+.avatars-select p{
+    position: relative;
+    left: 100px;
+}
+
+.user-preview{
+    height: 100px;
+    width: 90px;
+    position: absolute;
+    top: 140px;
+    left: 580px;
+}
+
+.user-preview .avatar{
+    width: 120px;
+    height: 120px;
+}
+
+.user-preview p{
+    margin-top: 130px;
+    left: 39px;
+    font-size: 20px;
+}

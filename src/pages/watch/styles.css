@@ -1,0 +1,278 @@
+.content-page-watch{
+    background-color: rgb(17, 31, 17);
+    height: 115%;
+    width: 100%;
+    color: rgb(203, 208, 255);
+    position: absolute;
+    margin: 0;
+}
+
+.background-img{
+    opacity: 0.2;
+    filter: blur(5px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+
+img{
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+.content-info{
+    margin-top: 100px;
+    position: absolute;
+}
+
+.apresentation{
+    display: flex;
+    padding: 30px;
+}
+
+.synopsis{
+    width: 100%;
+}
+
+.buttons-page{
+    width: 30%;
+    margin-left: 10%;
+}
+
+.button-cinewatch{
+    transition: 0.3s;
+    margin-left: 23%;
+    margin-top: 70px;
+}
+
+.button-cinewatch a{
+
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.button-cinewatch a:hover{
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(24, 65, 24);
+    border-right: 2px solid rgb(24, 65, 24);
+    border-top: 2px solid rgb(24, 65, 24);
+    border-bottom: 2px solid rgb(24, 65, 24);
+    background-color: rgba(17, 31, 17, 0.705);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button-cinewatch a .cinewatch{
+    margin-left: -10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    color: rgb(255, 255, 255);
+    transition: 0.3s;
+    font-size: 19px;
+    margin-bottom: -3px;
+}
+
+.resume-rewatch{
+    display: flex;
+}
+
+.separetor{
+    position: absolute;
+    width: 170px;
+    top: 103px;
+    left: 67%;
+    border-style: solid;
+    border-left: 2px solid rgba(24, 65, 24, 0);
+    border-right: 2px solid rgba(24, 65, 24, 0);
+    border-top: 2px solid rgba(24, 65, 24, 0);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.24);
+}
+
+.separetor-continue{
+    position: absolute;
+    width: 310px;
+    top: 103px;
+    left: 63.7%;
+    border-style: solid;
+    border-left: 2px solid rgba(24, 65, 24, 0);
+    border-right: 2px solid rgba(24, 65, 24, 0);
+    border-top: 2px solid rgba(24, 65, 24, 0);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.24);
+}
+
+.button-watch-continue{
+    transition: 0.3s;
+    margin-left: 20px;
+    margin-top: 18px;    
+}
+
+
+.button-watch-continue a{
+
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+
+.button-watch-continue a:hover{
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    background-color: rgba(17, 31, 17, 0.705);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button-watch-continue a .play-button-watch-page{
+    margin-left: -10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    color: rgb(255, 255, 255);
+    transition: 0.3s;
+    font-size: 19px;
+    margin-bottom: -3px;
+}
+
+.button-watch-init{
+    transition: 0.3s;
+    margin-left: 75px;
+    margin-top: 18px;
+}
+
+
+.button-watch-init a{
+
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.button-watch-init a:hover{
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    background-color: rgba(17, 31, 17, 0.705);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button-watch-init a .play-button-watch-page{
+    margin-left: -10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    color: rgb(255, 255, 255);
+    transition: 0.3s;
+    font-size: 19px;
+    margin-bottom: -3px;
+}
+
+.info{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.time{
+    font-size: 14px;
+    padding-right: 15px;
+}
+
+.year{
+    font-size: 16;
+    padding-left: 15px;
+}
+
+.title-movie{
+    padding-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 33px;
+}
+
+
+.grade{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.genres{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.genres p{
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 19px;
+}
+
+.watchlist-solo{
+    padding-left: 48%;
+    padding-right: 50%;
+}
+
+.button-wachlist-page{
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.103);
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(255, 245, 102);
+}
+
+
+.button-wachlist-page:hover{
+    background-color: rgba(0, 0, 0, 0.534);
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(255, 245, 102);
+}
+
+.add-list-page{
+    font-size: 40px;
+    display: flex;
+    cursor: pointer;
+    color: rgb(255, 245, 102);
+    padding: 8px;
+    margin-left: 2px;
+    margin-top: 2px;
+}

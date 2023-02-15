@@ -1,0 +1,152 @@
+.content{
+  background: radial-gradient(circle, rgb(17, 31, 17), rgb(9, 17, 9), rgb(4, 7, 4));
+  height: 100%;
+  width: 100%;
+  padding-top: 70px;
+}
+
+
+.box-perfil{
+  height: 100%;
+  width: 300px;
+  background-color: rgba(0, 0, 0, 0.205);
+  padding: 60px;
+  color: white;
+  transition: 0.3s;
+}
+
+.name{
+  padding: 10px;
+  transition: 0.4s;
+}
+
+.name input{
+  background-color: rgb(17, 31, 17);
+  padding: 3px;
+  border-radius: 3px;
+  color: white;
+  transition: 0.4s;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgba(255, 245, 102, 0);
+}
+
+.avatar{
+  width: 120px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgba(255, 245, 102, 0);
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 0 3px rgba(255, 245, 102, 0);
+  transition: 0.3s;
+}
+
+.avatar:hover{
+  border-color: rgb(255, 245, 102);
+  cursor: pointer;
+  box-shadow: 0 0 3px rgb(255, 245, 102);
+  transition: 0.3s;
+}
+
+.button-profile {
+  position: absolute;
+  padding: 30px;
+  margin-top: -66px;
+  margin-left: 260px;
+}
+
+.button-profile-avatar {
+  position: absolute;
+  padding: 30px;
+  margin-top: -100px;
+  margin-left: 200px;
+}
+
+.button-profile a {
+
+  border-left: 2px solid rgba(17, 31, 17, 0);
+  border-right: 2px solid rgba(17, 31, 17, 0);
+  border-top: 2px solid rgba(17, 31, 17, 0);
+  border-bottom: 2px solid rgb(255, 245, 102);
+
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.3s;
+
+}
+
+.button-profile-avatar a {
+
+  border-left: 2px solid rgba(17, 31, 17, 0);
+  border-right: 2px solid rgba(17, 31, 17, 0);
+  border-top: 2px solid rgba(17, 31, 17, 0);
+  border-bottom: 2px solid rgb(255, 245, 102);
+
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  transition: 0.3s;
+
+}
+
+.button-profile a:hover {
+  border-style: solid;
+  border-radius: 50px;
+  border-left: 2px solid rgb(24, 65, 24);
+  border-right: 2px solid rgb(24, 65, 24);
+  border-top: 2px solid rgb(24, 65, 24);
+  border-bottom: 2px solid rgb(24, 65, 24);
+  background-color: rgba(17, 31, 17, 0.705);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button-profile-avatar a:hover {
+  border-style: solid;
+  border-radius: 50px;
+  border-left: 2px solid rgb(24, 65, 24);
+  border-right: 2px solid rgb(24, 65, 24);
+  border-top: 2px solid rgb(24, 65, 24);
+  border-bottom: 2px solid rgb(24, 65, 24);
+  background-color: rgba(17, 31, 17, 0.705);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.avatars-select{
+  color: white;
+  padding: 5px;
+  font-size: 17px;
+}
+
+.select-avatars{
+  margin-left: 5px;
+  width: 110px;
+  height: 110px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgba(255, 245, 102, 0);
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 0 3px rgba(255, 245, 102, 0);
+  transition: 0.3s;
+}
+
+.select-avatars:hover{
+  border-color: rgb(255, 245, 102);
+  cursor: pointer;
+  box-shadow: 0 0 3px rgb(255, 245, 102);
+  transition: 0.3s;
+}
+
+.content-profile{
+  display: flex;
+}
+
+.alert-name{
+  color: rgba(233, 56, 56, 0.925);
+  font-size: 13px;
+  display: none;
+}

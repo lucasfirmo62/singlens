@@ -1,0 +1,273 @@
+.content-page-cinewatch {
+    background-color: rgb(17, 31, 17);
+    height: 115%;
+    width: 100%;
+    color: rgb(203, 208, 255);
+    position: absolute;
+    margin: 0;
+}
+
+.background-img-cine {
+    opacity: 0.6;
+    filter: blur(5px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+.background-img-inside {
+    opacity: 0.3;
+    filter: blur(5px);
+    position: absolute;
+    width: 41%;
+    height: 28%;
+    background-size: 100% 100%;
+    left: 29%;
+    top: 18%;
+}
+
+
+img {
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+.content-info-cine {
+    margin-top: 100px;
+    position: absolute;
+    width: 100%;
+}
+
+.apresentation-cine {
+    display: flex;
+    margin-left: 10%;
+}
+
+.button-cine {
+    position: absolute;
+    right: 20%;
+    transition: 0.3s;
+}
+
+.button-cine a {
+
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+
+}
+
+.button-cine a:hover {
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(24, 65, 24);
+    border-right: 2px solid rgb(24, 65, 24);
+    border-top: 2px solid rgb(24, 65, 24);
+    border-bottom: 2px solid rgb(24, 65, 24);
+    background-color: rgba(17, 31, 17, 0.705);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.info-cine {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.time-cine {
+    font-size: 14px;
+    position: absolute;
+    margin-top: 120px;
+    left: 130px;
+}
+
+.year-cine {
+    font-size: 16px;
+    position: absolute;
+    margin-top: 120px;
+    margin-left: -30px;
+}
+
+.title-movie-cine {
+    padding-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 33px;
+}
+
+
+.genres-cine {
+    display: flex;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: -205px;
+}
+
+.genres-cine p {
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 19px;
+}
+
+.watchlist-solo {
+    padding-left: 48%;
+    padding-right: 50%;
+}
+
+.button-wachlist-page {
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.103);
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(255, 245, 102);
+}
+
+
+.button-wachlist-page:hover {
+    background-color: rgba(0, 0, 0, 0.534);
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(255, 245, 102);
+}
+
+.add-list-page {
+    font-size: 40px;
+    display: flex;
+    cursor: pointer;
+    color: rgb(255, 245, 102);
+    padding: 8px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
+.painel-peoples {
+    width: 100%;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.363);
+    position: absolute;
+    margin-top: 300px;
+}
+
+.card-people {
+    color: white;
+    display: flex;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+contentCardPeople {
+    padding: 10px;
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+contentCardPeople:hover {
+    padding: 10px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+}
+
+.card-people img {
+    border-radius: 100px;
+    width: 100px;
+}
+
+.card-people p {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.enter-session {
+    height: 200px;
+    position: absolute;
+    top: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.enter-session p {
+    padding: 10px;
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.enter-session p:hover {
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(24, 65, 24);
+    border-right: 2px solid rgb(24, 65, 24);
+    border-top: 2px solid rgb(24, 65, 24);
+    border-bottom: 2px solid rgb(24, 65, 24);
+    background-color: rgba(17, 31, 17, 0.705);
+    cursor: pointer;
+}
+
+.exit-session {
+    height: 200px;
+    position: absolute;
+    top: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.exit-session p {
+    padding: 10px;
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.exit-session p:hover {
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgba(207, 21, 21, 0.973);
+    border-right: 2px solid rgba(207, 21, 21, 0.973);
+    border-top: 2px solid rgba(207, 21, 21, 0.973);
+    border-bottom: 2px solid rgba(207, 21, 21, 0.973);
+    background-color: rgba(255, 0, 0, 0.301);
+    cursor: pointer;
+}
