@@ -1,0 +1,43 @@
+.content-simple-carousel{
+    display: flex;
+}
+
+#list{
+    display: flex;
+    margin-left: -70px;
+    overflow:hidden;
+    white-space: nowrap;
+}
+
+.title-item{
+    display: flex;
+    padding: 4px;
+}
+
+.btnPreviousRP{
+    margin-left: -50px;
+    padding-right: 30px;
+    background: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.767), rgba(255, 255, 255, 0));
+    border-color: rgba(255, 255, 255, 0);
+    z-index:100;
+    position: absolute;
+    left: 50px;
+    height: 440px;
+    margin-top: 30px;
+    width: 50px;
+}
+
+.btnNextRP{
+    padding-left: 30px;
+    background: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.767), rgba(255, 255, 255, 0));
+    border-color: rgba(255, 255, 255, 0);
+    position: absolute;
+    left: 96.2%;
+    height: 440px;
+    margin-top: 30px;
+    width: 50px;
+}
+
+.arrows{
+    color: rgb(255, 245, 102);
+}

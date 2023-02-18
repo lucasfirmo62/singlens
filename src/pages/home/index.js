@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './styles.css';
 import SimpleCarouselTitles from '../../components/simple-carousel';
+import SimpleCarouselPoster from '../../components/simple-carousel-poster';
+import SimpleLittleCarouselPoster from '../../components/simple-little-carousel-poster';
 import MyList from '../../components/MyList';
 import Header from '../../components/header'
 import Footer from '../../components/footer'
@@ -60,21 +62,29 @@ function App() {
           name={"Continuar Assistindo"}
           titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
         />
-        <SimpleCarouselTitles
-          name={"Estrangeiros"}
-          titles={"https://api.npoint.io/fb2310e0c170aeaea064"}
-        />
-        <SimpleCarouselTitles
-          name={"Bons filmes noir"}
-          titles={"https://api.npoint.io/f46409bca7760ba6a7d6"}
-        />
         <MyList
           name={"Minha Lista"}
           titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
         />
         <SimpleCarouselTitles
+          name={"Estrangeiros"}
+          titles={"https://api.npoint.io/fb2310e0c170aeaea064"}
+        />
+        <SimpleCarouselPoster
+          name={"Grandes Obras"}
+          titles={"https://api.npoint.io/5fce3c9ba24692626762"}
+        />
+        <SimpleCarouselTitles
+          name={"Bons filmes noir"}
+          titles={"https://api.npoint.io/f46409bca7760ba6a7d6"}
+        />
+        <SimpleLittleCarouselPoster
+          name={"Menos de 90 minutos"}
+          titles={"https://api.npoint.io/55562f5f6bde87e66682"}
+        />
+        <SimpleCarouselTitles
           name={"Aclamados"}
-          titles={"https://api.npoint.io/65737b8c3c5f4364b75e"}
+          titles={"https://api.npoint.io/d725e3865721de91ddd6"}
         />
       </div>
       <Footer />
