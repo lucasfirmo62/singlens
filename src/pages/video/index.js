@@ -12,11 +12,23 @@ import { removeQuote } from '../../assistant';
 import api from '../../api';
 
 var stateResume = false
-var stateSubtitle = false
-var verifySub = ''
-var vidvrf = 0
+var stateSubtitle = true
+var stateAutoPlay = true
+
 
 function usePlayerState($VideoPlayer) {
+
+  setTimeout(function () {
+
+    if ((document.getElementById("time-left-show").innerHTML).length < 3) {
+      document.getElementById('load').style.display = "block"
+    }
+    else {
+      document.getElementById('load').style.display = "none"
+    }
+
+  }, 100);
+
 
   const [userUtility, setUserUtility] = useState([]);
 
@@ -81,6 +93,16 @@ function usePlayerState($VideoPlayer) {
     })
   }
 
+  if (stateAutoPlay === true) {
+    setTimeout(function () {
+
+      playPause()
+      stateAutoPlay = false;
+    }, 1000);
+
+  }
+
+
   function searchByEnter(stringSubtitle, enter) {
     var x = 0
     for (x in stringSubtitle) {
@@ -125,13 +147,13 @@ function usePlayerState($VideoPlayer) {
             stringSearch = stringSearch.substr(0, posCut)
             document.getElementById("subtitle-render").innerHTML = stringSearch
             document.getElementById('subtitle-render').style.display = 'block';
-            if((stringSearch.length > 30) && (stringSearch.length < 43)){
+            if ((stringSearch.length > 30) && (stringSearch.length < 43)) {
               document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.7s forwards';
-            }if((stringSearch.length > 1) && (stringSearch.length <= 20)){
+            } if ((stringSearch.length > 1) && (stringSearch.length <= 20)) {
               document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.3s forwards';
-            }if((stringSearch.length > 20) && (stringSearch.length <= 30)){
+            } if ((stringSearch.length > 20) && (stringSearch.length <= 30)) {
               document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.6s forwards';
-            }if((stringSearch.length > 43)){
+            } if ((stringSearch.length > 43)) {
               document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 1.2s forwards';
             }
           }
@@ -207,11 +229,12 @@ function usePlayerState($VideoPlayer) {
 
     tenths = tenths.toString()
     tenths = tenths.substr(2, 3)
-    
+
 
     var currentTranform = hour + ":" + mins + ":" + secs
     currentTranform = currentTranform.toString()
     var lasSub = subtitle(currentTranform)
+
 
 
     document.getElementById("current-time-show").innerHTML = hour + ":" + mins + ":" + secs;
@@ -320,7 +343,6 @@ function usePlayerState($VideoPlayer) {
 
 }
 
-
 const PlayerVideo = () => {
 
   const $VideoPlayer = useRef(null);
@@ -338,6 +360,7 @@ const PlayerVideo = () => {
     handleTimeUpdate,
     handleChangePercentage,
   } = usePlayerState($VideoPlayer)
+
 
   useEffect(() => {
     const url = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
@@ -486,25 +509,29 @@ const PlayerVideo = () => {
     }
   }
 
-  
+
   function goBack() {
     window.location.replace(`/watch/${idMovie}`)
   }
 
-  function subtitleSatteSet(){
-    if(stateSubtitle === true ){
+  function subtitleSatteSet() {
+    if (stateSubtitle === true) {
       stateSubtitle = false
       return
     }
 
-    if(stateSubtitle === false){
+    if (stateSubtitle === false) {
       stateSubtitle = true
       return
     }
   }
 
+
   return (
     <div className='content-video-player' id='content-video-player'>
+      <div id='load' className="loadingio-spinner-rolling-7fylwl190qh"><div className="ldio-qjgygy3qvv">
+        <div></div>
+      </div></div>
       <video
         className="video-player"
         ref={$VideoPlayer}
@@ -596,9 +623,9 @@ const PlayerVideo = () => {
       </div>
       <div>
         {(stateSubtitle === true) ?
-        <div className='subtitle-render' id='subtitle-render'></div>
-        :
-        <div></div>
+          <div className='subtitle-render' id='subtitle-render'></div>
+          :
+          <div></div>
         }
       </div>
     </div>

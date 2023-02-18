@@ -9,6 +9,17 @@ import { MdOutlineArrowForwardIos } from 'react-icons/md';
 const CarouselSimple = ({ name, titles }) => {
 
   const [movies, setMovies] = useState([]);
+  var carouselName = name.substring(0,3)
+
+  setTimeout(function() {
+
+  document.getElementById(carouselName).style.display = "flex";
+  document.getElementById(carouselName).style.marginLeft = "-70px";
+  document.getElementById(carouselName).style.overflow = "hidden";
+  document.getElementById(carouselName).style.whiteSpace = "nowrap";
+
+}, 100);
+
 
 
 
@@ -21,7 +32,7 @@ const CarouselSimple = ({ name, titles }) => {
       })
   }, [])
 
-  const box = document.querySelector(`.list`);
+  const box = document.querySelector(`.${carouselName}`);
   var count = 0;
 
   const leftA = document.getElementById("low1");
@@ -70,23 +81,23 @@ const CarouselSimple = ({ name, titles }) => {
   return (
     <div>
       <div>{name}</div>
-    <div className='content-simple-carousel'>
-      <button id="low" onClick={previous} className="btnPreviousR">
-      <MdOutlineArrowBackIosNew onClick={previous} id="low2" className='arrows'/>
-      </button>
-      <ul className={`list`}>
-        {movies.map((movie, index) => (
-          <li className="title-item" key={index}>
-            <CardTitle
-              id={movie.id}
-            />
-          </li>
-        ))}
-      </ul>
-      <button className="btnNextR" id="low" onClick={next}>
-        <MdOutlineArrowForwardIos onClick={next} id="low2" className='arrows'/>
-      </button>
-    </div>
+      <div className='content-simple-carousel'>
+        <button id="low" onClick={previous} className="btnPreviousR">
+          <MdOutlineArrowBackIosNew onClick={previous} id="low2" className='arrows' />
+        </button>
+        <ul id={carouselName} className={carouselName}>
+          {movies.map((movie, index) => (
+            <li className="title-item" key={index}>
+              <CardTitle
+                id={movie.id}
+              />
+            </li>
+          ))}
+        </ul>
+        <button className="btnNextR" id="low" onClick={next}>
+          <MdOutlineArrowForwardIos onClick={next} id="low2" className='arrows' />
+        </button>
+      </div>
     </div>
   )
 }

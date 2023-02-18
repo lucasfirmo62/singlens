@@ -47,6 +47,10 @@ const SignUp = () => {
         var password = document.getElementById('password').value
         var avatar = avatarUserAtribute
 
+        if(avatar === ''){
+            avatar = '1'
+        }
+
         const data = {
             name,
             email,
@@ -60,7 +64,14 @@ const SignUp = () => {
             }
         })
 
-        window.location.replace(`/login`)
+
+        document.getElementById('load').style.display = "block"
+
+
+        setTimeout(function () {
+            document.getElementById('load').style.display = "none"
+            window.location.replace(`/login`)
+        }, 2000);
 
     }
 
@@ -83,6 +94,9 @@ const SignUp = () => {
 
     return (
         <div className='content-sign-up'>
+            <div id='load' className="loadingio-spinner-rolling-7fylwl190qh"><div className="ldio-qjgygy3qvv">
+                <div></div>
+            </div></div>
             <div className='boxer-sign-up'>
                 <div className='content-form-sign-up'>
                     <div id='stage-one' className='stage-one'>

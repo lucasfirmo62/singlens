@@ -18,6 +18,21 @@ const CardTitleResume = ({ id }) => {
   const [userUtility, setUserUtility] = useState([]);
 
 
+  const [toogleRemove, setToogleRemove] = React.useState(true);
+
+  const [removeMovie, setRemove] = React.useState(<AiOutlineCheck className='add-list' />);
+  React.useEffect(() => {
+    setRemove((stateRMV) => toogleRemove ? <AiOutlineCheck className='add-list' /> : <AiOutlinePlus className='add-list' />);
+  }, [toogleRemove]);
+
+  const [toogleAdd, setToogleAdd] = React.useState(true);
+
+  const [addMovie, setAdd] = React.useState(<AiOutlinePlus className='add-list' />);
+  React.useEffect(() => {
+    setAdd((stateAdd) => toogleAdd ? <AiOutlinePlus className='add-list' /> : <AiOutlineCheck className='add-list' />);
+  }, [toogleAdd]);
+
+
 
   useEffect(() => {
     const url = `https://api.themoviedb.org/3/movie/${id}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
@@ -102,6 +117,9 @@ const CardTitleResume = ({ id }) => {
 
   async function setWachlist() {
 
+    setToogleAdd(stateAdd => !stateAdd)
+    setToogleRemove(stateRMV => !stateRMV)
+
     var user = removeQuote(localStorage.getItem('IdUser'))
 
     var userContent;
@@ -180,13 +198,13 @@ const CardTitleResume = ({ id }) => {
         }
         {
           (UserUtilityList?.includes(id) === true) ?
-            <div className='button-wachlist-resume' onClick={setWachlist}>
-              <AiOutlineCheck className='add-list' />
-            </div>
-            :
-            <div className='button-wachlist-resume' onClick={setWachlist}>
-              <AiOutlinePlus className='add-list' />
-            </div>
+          <div className='button-wachlist-resume' onClick={() => setWachlist(0)}>
+          {removeMovie}
+        </div>
+      :
+        <div className='button-wachlist-resume' onClick={() => setWachlist(1)}>
+          {addMovie}
+        </div>
         }
       </div>
     </div>

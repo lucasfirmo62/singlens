@@ -12,7 +12,7 @@ import { removeQuote } from '../../assistant';
 import api from '../../api';
 
 var stateResume = false
-var stateSubtitle = false
+var stateSubtitle = true
 var verifySub = ''
 var vidvrf = 0
 

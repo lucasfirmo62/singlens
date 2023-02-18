@@ -32,7 +32,13 @@ function App() {
     window.location.replace(`/login`)
   }
 
-  setTimeout(function() {
+  setTimeout(function () {
+    document.getElementById('load').style.display = "block"
+  }, 100);
+
+
+
+  setTimeout(function () {
     document.getElementById('carousels').style.visibility = "visible"
     document.getElementById('load').style.display = "none"
   }, 2000);
@@ -47,7 +53,7 @@ function App() {
       <Header />
       <div className='carousels' id='carousels'>
         <SimpleCarouselTitles
-          name={"Titulos recentes"}
+          name={"Acabou de Chegar..."}
           titles={"https://api.npoint.io/65737b8c3c5f4364b75e"}
         />
         <Resume
@@ -59,15 +65,19 @@ function App() {
           titles={"https://api.npoint.io/fb2310e0c170aeaea064"}
         />
         <SimpleCarouselTitles
-          name={"Titulos recentes"}
-          titles={"https://api.npoint.io/65737b8c3c5f4364b75e"}
+          name={"Bons filmes noir"}
+          titles={"https://api.npoint.io/f46409bca7760ba6a7d6"}
         />
         <MyList
           name={"Minha Lista"}
           titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
         />
+        <SimpleCarouselTitles
+          name={"Aclamados"}
+          titles={"https://api.npoint.io/65737b8c3c5f4364b75e"}
+        />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

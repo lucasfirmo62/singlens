@@ -16,6 +16,20 @@ const Watch = () => {
   const [filmBy, setFilmBy] = useState([]);
   const [userUtility, setUserUtility] = useState([]);
 
+  const [toogleRemove, setToogleRemove] = React.useState(true);
+
+  const [removeMovie, setRemove] = React.useState(<AiOutlineCheck className='add-list-page' />);
+  React.useEffect(() => {
+    setRemove((stateRMV) => toogleRemove ? <AiOutlineCheck className='add-list-page' /> : <AiOutlinePlus className='add-list-page' />);
+  }, [toogleRemove]);
+
+  const [toogleAdd, setToogleAdd] = React.useState(true);
+
+  const [addMovie, setAdd] = React.useState(<AiOutlinePlus className='add-list-page' />);
+  React.useEffect(() => {
+    setAdd((stateAdd) => toogleAdd ? <AiOutlinePlus className='add-list-page' /> : <AiOutlineCheck className='add-list-page' />);
+  }, [toogleAdd]);
+
 
   var url = window.location.href
 
@@ -124,6 +138,9 @@ const Watch = () => {
 
   async function setWachlist() {
 
+    setToogleAdd(stateAdd => !stateAdd)
+    setToogleRemove(stateRMV => !stateRMV)
+
     var userContent;
 
     var xmlhttp = new XMLHttpRequest();
@@ -213,13 +230,13 @@ const Watch = () => {
           (UserUtilityList?.includes(idMovie) === true) ?
             <div className='watchlist-solo'>
               <div className='button-wachlist-page' onClick={setWachlist} title='Remover da sua Lista'>
-                <AiOutlineCheck className='add-list-page' />
+                {removeMovie}
               </div>
             </div>
             :
             <div className='watchlist-solo'>
               <div className='button-wachlist-page' onClick={setWachlist} title='Adicionar à sua Lista'>
-                <AiOutlinePlus className='add-list-page' />
+                {addMovie}
               </div>
             </div>
         }

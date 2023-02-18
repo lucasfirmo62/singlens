@@ -17,7 +17,19 @@ const CardTitle = ({ id }) => {
   const [allMovies, setAllMovies] = useState([]);
   const [userUtility, setUserUtility] = useState([]);
 
+  const [toogleRemove, setToogleRemove] = React.useState(true);
 
+  const [removeMovie, setRemove] = React.useState(<AiOutlineCheck className='add-list' />);
+  React.useEffect(() => {
+    setRemove((stateRMV) => toogleRemove ? <AiOutlineCheck className='add-list' /> : <AiOutlinePlus className='add-list' />);
+  }, [toogleRemove]);
+
+  const [toogleAdd, setToogleAdd] = React.useState(true);
+
+  const [addMovie, setAdd] = React.useState(<AiOutlinePlus className='add-list' />);
+  React.useEffect(() => {
+    setAdd((stateAdd) => toogleAdd ? <AiOutlinePlus className='add-list' /> : <AiOutlineCheck className='add-list' />);
+  }, [toogleAdd]);
 
   useEffect(() => {
     const url = `https://api.themoviedb.org/3/movie/${id}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
@@ -66,7 +78,7 @@ const CardTitle = ({ id }) => {
   UserUtilityResume = userUtility.resume;
 
   var backdropUndefined = removeQuote(localStorage.getItem('undefined-image'))
-  
+
   var u = 0
   var posterMovie = backdropUndefined;
   for (u in allMovies.movies) {
@@ -100,7 +112,10 @@ const CardTitle = ({ id }) => {
     ratingMovie = String(ratingMovie)
   }
 
-  async function setWachlist() {
+  async function setWachlist(statusShow) {
+    
+    setToogleAdd(stateAdd => !stateAdd)
+    setToogleRemove(stateRMV => !stateRMV)
 
     var user = removeQuote(localStorage.getItem('IdUser'))
 
@@ -142,14 +157,15 @@ const CardTitle = ({ id }) => {
         'Content-Type': 'application/json',
       }
     })
+
   }
 
   var infoResume;
 
-  if(UserUtilityResume?.find(movieMark => movieMark?.idMovie === id)){
+  if (UserUtilityResume?.find(movieMark => movieMark?.idMovie === id)) {
     infoResume = UserUtilityResume?.find(movieMark => movieMark?.idMovie === id)
   }
-  
+
 
 
 
@@ -171,7 +187,7 @@ const CardTitle = ({ id }) => {
               <BsFillPlayFill onClick={goWatch} className='resume-movie' />
               <p className='watch-now-title-resume' onClick={goWatch} title={`Continuar ${movie.title}`}>Continue assistindo</p>
               <div className='current-percentage-background'>
-                <div style={{width: `${infoResume?.currentTimeMovie}%`}} className='current-percentage'></div>
+                <div style={{ width: `${infoResume?.currentTimeMovie}%` }} className='current-percentage'></div>
               </div>
             </div>
             :
@@ -182,13 +198,13 @@ const CardTitle = ({ id }) => {
         }
         {
           (UserUtilityList?.includes(id) === true) ?
-            <div className='button-wachlist' onClick={setWachlist}>
-              <AiOutlineCheck className='add-list' />
-            </div>
+              <div className='button-wachlist' onClick={() => setWachlist(0)}>
+                {removeMovie}
+              </div>
             :
-            <div className='button-wachlist' onClick={setWachlist}>
-              <AiOutlinePlus className='add-list' />
-            </div>
+              <div className='button-wachlist' onClick={() => setWachlist(1)}>
+                {addMovie}
+              </div>
         }
       </div>
     </div>
