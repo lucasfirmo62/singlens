@@ -75,7 +75,7 @@ function App() {
           titles={"https://api.npoint.io/5fce3c9ba24692626762"}
         />
         <SimpleCarouselTitles
-          name={"Bons filmes noir"}
+          name={"Bons filmes Noir"}
           titles={"https://api.npoint.io/f46409bca7760ba6a7d6"}
         />
         <SimpleLittleCarouselPoster
@@ -83,8 +83,16 @@ function App() {
           titles={"https://api.npoint.io/55562f5f6bde87e66682"}
         />
         <SimpleCarouselTitles
-          name={"Aclamados"}
+          name={"Aclamados Desconhecidos"}
           titles={"https://api.npoint.io/d725e3865721de91ddd6"}
+        />
+        <SimpleCarouselTitles
+          name={"Comédias e um pouco mais"}
+          titles={"https://api.npoint.io/8b263560be76a3cab3b3"}
+        />
+        <SimpleCarouselTitles
+          name={"Faroestes empolgantes"}
+          titles={"https://api.npoint.io/1033048702d202f92407"}
         />
       </div>
       <Footer />

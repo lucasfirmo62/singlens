@@ -1,13 +1,18 @@
 .header-content{
-    top: 0px;
+    top: -5px;
     width: 100%;
-    height: 30px;
+    height: 20px;
     background-color: rgba(4, 7, 4, 0.726);
     position: fixed;
     display: flex;
     padding-left: 58%;
-    padding-top: 10px;
     padding-bottom: 30px;
+    transition: 0.3s;
+}
+
+.header-content:hover{
+    background-color: rgba(4, 7, 4, 0.938);
+    transition: 0.3s;
 }
 
 .header-content div{

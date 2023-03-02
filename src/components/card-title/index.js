@@ -102,14 +102,14 @@ const CardTitle = ({ id }) => {
       if (reviews.results[x].author_details.rating > 0) {
         countRating++;
       }
-      if (reviews.results[x].author_details.rating == "NaN") {
-        ratingMovie = movie.vote_average;
-        return
-      }
     }
     ratingMovie = ratingMovie / countRating;
     ratingMovie = (movie.vote_average + ratingMovie) / 2
     ratingMovie = String(ratingMovie)
+
+    if (ratingMovie === "NaN") {
+      ratingMovie = String(movie.vote_average)
+    }
   }
 
   async function setWachlist(statusShow) {

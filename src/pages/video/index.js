@@ -227,6 +227,35 @@ function usePlayerState($VideoPlayer) {
       secs = "0" + secs;
     }
 
+
+    if (hourLeft < 10) {
+      hourLeft = "0" + hourLeft;
+    }
+    if (minsLeft < 10) {
+      minsLeft = "0" + minsLeft;
+    }
+    if ((minsLeft >= 60) && (minsLeft < 120)) {
+      minsLeft = minsLeft - 60;
+      if (minsLeft < 10) {
+        minsLeft = "0" + minsLeft;
+      }
+    }
+    if ((minsLeft >= 120) && (minsLeft < 180)) {
+      minsLeft = minsLeft - 120;
+      if (minsLeft < 10) {
+        minsLeft = "0" + minsLeft;
+      }
+    }
+    if ((minsLeft >= 180) && (minsLeft < 240)) {
+      minsLeft = minsLeft - 180;
+      if (minsLeft < 10) {
+        minsLeft = "0" + minsLeft;
+      }
+    }
+    if (secsLeft < 10) {
+      secsLeft = "0" + secsLeft;
+    }
+
     tenths = tenths.toString()
     tenths = tenths.substr(2, 3)
 
