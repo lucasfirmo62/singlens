@@ -1,312 +1,356 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './styles.css';
-import Header from '../../components/header'
+import Header from '../../components/header';
 import { removeQuote } from '../../assistant';
-import { AiOutlinePlus } from 'react-icons/ai';
-import { AiOutlineCheck } from 'react-icons/ai';
 import api from '../../api';
 
+const AVATARS = {
+  1: 'nPO29qu.jpeg',
+  2: 'oYBkmhj.jpeg',
+  3: '5Pcx3Vq.jpeg',
+  4: 'vAP7kdO.jpeg',
+  5: 'sZyMbsu.jpeg',
+  6: 'mDLxGQ9.jpeg',
+};
 
 const Watch = () => {
+  const [movieWatch, setMovie] = useState({});
+  const [userUtility, setUserUtility] = useState({});
+  const [participants, setParticipants] = useState([]);
 
-  const [movieWatch, setMovie] = useState([]);
-  const [filmBy, setFilmBy] = useState([]);
-  const [userUtility, setUserUtility] = useState([]);
+  const redirecting = useRef(false);
 
-  var backdropUndefined = removeQuote(localStorage.getItem('undefined-image'))
-  console.log(backdropUndefined)
-  var backdrop;
+  const idMovie =
+    window.location.pathname.split('/watch/')[1]?.split('/')[0] || '';
 
-
-  var url = window.location.href
-
-  var position = url.indexOf("watch/");
-
-  var idMovie = url.substr(position + 6, 100);
-
-  var userVerify = removeQuote(localStorage.getItem('user'))
-
-  if (userVerify.length < 10) {
-    window.location.replace(`/login`)
-  }
-
+  const userVerify = removeQuote(localStorage.getItem('user') || '');
+  const idUser = removeQuote(localStorage.getItem('IdUser') || '');
 
   useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
-    fetch(url)
-      .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setMovie(await data);
-      })
-  }, [])
-
-  useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}/credits?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
-    fetch(url)
-      .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setFilmBy(await data);
-      })
-  }, [])
-
-  var timeH = 0;
-  var timeM = 0;
-
-  var hour = 0;
-  var min = 0;
-
-  if (movieWatch.runtime) {
-    hour = Math.floor(movieWatch.runtime / 60);
-    min = movieWatch.runtime % 60;
-    timeH = (`${hour}`).slice(-2);
-    timeM = (`00${min}`).slice(-2);
-  }
-
-  var year;
-
-  if (movieWatch.release_date) {
-    year = movieWatch.release_date.substr(0, 4)
-  }
-
-  function goCineWatch() {
-    var cineMark = {
-      cineWatchState: "true",
-      cineWatchTime: "0",
-      cineWatchMovieId: idMovie
-    };
-
-    const data = {
-      cineWatch: cineMark
+    if (userVerify.length < 10) {
+      window.location.replace('/login');
     }
-
-    api.post(`/auth/cinewatchpresession/${idUser}`, { cineWatchMovieId: idMovie }, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-
-    window.location.replace(`/cinewatch-play/${idMovie}`)
-  }
-
-  var idUser = removeQuote(localStorage.getItem('IdUser'))
+  }, [userVerify]);
 
   useEffect(() => {
-    const url = `https://brave-red-blazer.cyclic.app/auth/${idUser}`
-    fetch(url)
-      .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setUserUtility(await data);
-      })
-  }, [])
+    if (!idMovie) return;
 
-    if(userUtility.cineWatch?.cineWatchState === "true"){
-      window.location.replace(`/cinewatch-play/${idMovie}`)
-    }
+    const fetchMovie = async () => {
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
+        );
 
-
-  var UserUtilityList = userUtility.watchlist;
-  var UserUtilityResume = userUtility.resume;
-
-  async function searchPeoplesCine() {
-
-    var userContent;
-
-
-    var xmlhttp = new XMLHttpRequest();
-    var url = `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`;
-
-    var avatarOne = "nPO29qu.jpeg";
-    var avatarTwo = "oYBkmhj.jpeg";
-    var avatarThree = "5Pcx3Vq.jpeg";
-    var avatarFour = "vAP7kdO.jpeg";
-    var avatarFive = "sZyMbsu.jpeg";
-    var avatarSix = "mDLxGQ9.jpeg";
-
-    xmlhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        userContent = JSON.parse(this.responseText);
-        var x = 0
-        var litsUsers = '';
-        var litsUsersImg = '';
-        for (x = 0; x < userContent.length; x++) {
-          if (userContent[x].avatar === "1") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarOne}"/></div></contentCardPeople>`
-          }
-          if (userContent[x].avatar === "2") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarTwo}"/></div></contentCardPeople>`
-          }
-          if (userContent[x].avatar === "3") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarThree}"/></div></contentCardPeople>`
-          }
-          if (userContent[x].avatar === "4") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarFour}"/></div></contentCardPeople>`
-          }
-          if (userContent[x].avatar === "5") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarFive}"/></div></contentCardPeople>`
-          }
-          if (userContent[x].avatar === "6") {
-            litsUsers += `<contentCardPeople><div className='card-people' id='card-people'><p>${userContent[x].name}</p><img className='avatar' src="https://i.imgur.com/${avatarSix}"/></div></contentCardPeople>`
-          }
+        if (!response.ok) {
+          throw new Error('Não foi possível carregar o filme.');
         }
-        document.getElementById("card-people").innerHTML = litsUsers
+
+        const data = await response.json();
+        setMovie(data);
+      } catch (error) {
+        console.error('Erro ao buscar filme:', error);
       }
     };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-  }
 
-  async function verifyEnterCineWatch() {
+    fetchMovie();
+  }, [idMovie]);
 
-    var userContent;
+  useEffect(() => {
+    if (!idUser) return;
 
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          `https://brave-red-blazer.cyclic.app/auth/${idUser}`
+        );
 
-    var xmlhttp = new XMLHttpRequest();
-    var url = `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`;
-
-    var avatarOne = "nPO29qu.jpeg"
-
-    xmlhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        userContent = JSON.parse(this.responseText);
-        var x = 0
-        for (x = 0; x < userContent.length; x++) {
-          if ((userContent[x].cineWatch?.cineWatchState === "true") && userUtility.cineWatchMovieId === idMovie) {
-            goCineWatch()
-          }
+        if (!response.ok) {
+          throw new Error('Não foi possível carregar os dados do usuário.');
         }
+
+        const data = await response.json();
+        setUserUtility(data);
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
       }
     };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-  }
 
+    fetchUser();
+  }, [idUser]);
 
-  async function enterSession() {
+  useEffect(() => {
+    if (userUtility.cineWatch?.cineWatchState === 'true') {
+      window.location.replace(`/cinewatch-play/${idMovie}`);
+    }
+  }, [userUtility.cineWatch?.cineWatchState, idMovie]);
 
-    var cineMark = {
-      cineWatchState: "false",
-      cineWatchTime: "0",
-      cineWatchMovieId: idMovie
-    };
+  const runtime = movieWatch.runtime || 0;
+  const timeH = String(Math.floor(runtime / 60)).padStart(2, '0');
+  const timeM = String(runtime % 60).padStart(2, '0');
+  const year = movieWatch.release_date?.substring(0, 4);
 
-    const data = {
-      cineWatch: cineMark
+  const goCineWatch = useCallback(async () => {
+    if (redirecting.current) return;
+
+    redirecting.current = true;
+
+    try {
+      await api.post(
+        `/auth/cinewatchpresession/${idUser}`,
+        { cineWatchMovieId: idMovie },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      window.location.replace(`/cinewatch-play/${idMovie}`);
+    } catch (error) {
+      redirecting.current = false;
+      console.error('Erro ao iniciar sessão:', error);
+    }
+  }, [idUser, idMovie]);
+
+  const searchPeoplesCine = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Não foi possível buscar os participantes.');
+      }
+
+      const data = await response.json();
+      setParticipants(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Erro ao buscar participantes:', error);
+    }
+  }, [idMovie]);
+
+  const verifyEnterCineWatch = useCallback(async () => {
+    if (userUtility.cineWatchMovieId !== idMovie || redirecting.current) {
+      return;
     }
 
-    api.post(`/auth/cinewatchpresession/${idUser}`, { cineWatchMovieId: idMovie }, {
-      headers: {
-        'Content-Type': 'application/json',
+    try {
+      const response = await fetch(
+        `https://brave-red-blazer.cyclic.app/auth/cinewatch/${idMovie}`
+      );
+
+      if (!response.ok) {
+        throw new Error('Não foi possível verificar a sessão.');
       }
-    })
 
-    api.post(`/auth/cinewatch/${idUser}`, data, {
-      headers: {
-        'Content-Type': 'application/json',
+      const data = await response.json();
+
+      if (!Array.isArray(data)) return;
+
+      const sessionStarted = data.some(
+        user => user.cineWatch?.cineWatchState === 'true'
+      );
+
+      if (sessionStarted) {
+        await goCineWatch();
       }
-    })
-
-    window.location.reload(false);
-
-  }
-
-  async function exitSession() {
-
-
-    var cineMark = [];
-
-    const data = {
-      cineWatch: cineMark
+    } catch (error) {
+      console.error('Erro ao verificar sessão:', error);
     }
+  }, [idMovie, userUtility.cineWatchMovieId, goCineWatch]);
 
-    api.post(`/auth/cinewatchpresession/${idUser}`, { cineWatchMovieId: "" }, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
+  useEffect(() => {
+    if (!idMovie) return;
 
-    api.post(`/auth/cinewatch/${idUser}`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
+    searchPeoplesCine();
 
-    window.location.reload(false);
-
-  }
-
-  startTimerVerify()
-
-  var timerStatusCine;
-
-  function startTimerVerify() {
-    timerStatusCine = setInterval(function () {
-      verifyEnterCineWatch()
-    }, 1000);
-  }
-
-
-  startTimer()
-
-  var timer;
-
-  function startTimer() {
-    timer = setInterval(function () {
-      searchPeoplesCine()
+    const timer = setInterval(() => {
+      searchPeoplesCine();
     }, 2000);
-  }
 
+    return () => clearInterval(timer);
+  }, [idMovie, searchPeoplesCine]);
+
+  useEffect(() => {
+    if (!idMovie || userUtility.cineWatchMovieId !== idMovie) return;
+
+    const timer = setInterval(() => {
+      verifyEnterCineWatch();
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [idMovie, userUtility.cineWatchMovieId, verifyEnterCineWatch]);
+
+  const enterSession = async () => {
+    const cineMark = {
+      cineWatchState: 'false',
+      cineWatchTime: '0',
+      cineWatchMovieId: idMovie,
+    };
+
+    try {
+      await api.post(
+        `/auth/cinewatchpresession/${idUser}`,
+        { cineWatchMovieId: idMovie },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      await api.post(
+        `/auth/cinewatch/${idUser}`,
+        { cineWatch: cineMark },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Erro ao entrar na sessão:', error);
+    }
+  };
+
+  const exitSession = async () => {
+    try {
+      await api.post(
+        `/auth/cinewatchpresession/${idUser}`,
+        { cineWatchMovieId: '' },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      await api.post(
+        `/auth/cinewatch/${idUser}`,
+        { cineWatch: [] },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Erro ao sair da sessão:', error);
+    }
+  };
 
   return (
-    <div className='content-page-cinewatch'>
-      <div className='background-img-inside'>
-        {movieWatch.backdrop_path ? <img
-          alt="background"
-          className="title-content"
-          src={`https://image.tmdb.org/t/p/w1280/${movieWatch.backdrop_path}`}
-        /> : ""}
+    <div className="content-page-cinewatch">
+      <div className="background-img-inside">
+        {movieWatch.backdrop_path && (
+          <img
+            alt="Plano de fundo do filme"
+            className="title-content"
+            src={`https://image.tmdb.org/t/p/w1280/${movieWatch.backdrop_path}`}
+          />
+        )}
       </div>
-      <div className='background-img-cine'>
+
+      <div className="background-img-cine">
         <img
-          alt="background"
+          alt="Plano de fundo do CineWatch"
           className="title-content"
-          src={`https://i.imgur.com/pfJ16n5.png`}
+          src="https://i.imgur.com/pfJ16n5.png"
         />
       </div>
+
       <Header />
-      <div className='content-info-cine'>
-        <div className='apresentation-cine'>
-          <div className='title-movie-cine'>{movieWatch.title}</div>
-          <div className='info-cine'>
-            <div className='time-cine'>{`${timeH}h e ${timeM}min`}</div>
-            <div className='year-cine'>{year}</div>
+
+      <div className="content-info-cine">
+        <div className="apresentation-cine">
+          <div className="title-movie-cine">
+            {movieWatch.title}
           </div>
-          <div className='grade-cine'>
-            <div className='genres-cine'>
-              {movieWatch.genres && movieWatch.genres.map((genre, index) => {
-                if (index !== movieWatch.genres.length - 1) {
-                  return <p>{genre.name}</p>
-                }
-                return <p>{genre.name}</p>
-              })}
+
+          <div className="info-cine">
+            <div className="time-cine">
+              {`${timeH}h e ${timeM}min`}
+            </div>
+
+            <div className="year-cine">
+              {year}
+            </div>
+          </div>
+
+          <div className="grade-cine">
+            <div className="genres-cine">
+              {movieWatch.genres?.map(genre => (
+                <p key={genre.id}>{genre.name}</p>
+              ))}
             </div>
           </div>
         </div>
-        <div className='button-cine' onClick={goCineWatch}><a>Iniciar Sessão</a></div>
+
+        <div className="button-cine">
+          <a
+            href={`/cinewatch-play/${idMovie}`}
+            onClick={event => {
+              event.preventDefault();
+              goCineWatch();
+            }}
+          >
+            Iniciar Sessão
+          </a>
+        </div>
       </div>
-      <div className='painel-peoples'>
-        <div id='avatar'></div>
-        <div className='card-people' id='card-people'></div>
+
+      <div className="painel-peoples">
+        <div id="avatar"></div>
+
+        <div className="card-people" id="card-people">
+          {participants.map((participant, index) => {
+            const avatar = AVATARS[participant.avatar];
+
+            return (
+              <div
+                className="card-people"
+                key={participant._id || participant.id || index}
+              >
+                <p>{participant.name}</p>
+
+                {avatar && (
+                  <img
+                    className="avatar"
+                    src={`https://i.imgur.com/${avatar}`}
+                    alt={`Avatar de ${participant.name}`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
-      {(userUtility.cineWatchMovieId === idMovie) ?
-        <div className='exit-session' id="exit-session" onClick={exitSession}><p>Cancelar</p></div>
-        :
-        <div className='enter-session' id="enter-session" onClick={enterSession}><p>PRONTO PARA A SESSÃO</p></div>
-      }
+
+      {userUtility.cineWatchMovieId === idMovie ? (
+        <button
+          type="button"
+          className="exit-session"
+          id="exit-session"
+          onClick={exitSession}
+        >
+          <p>Cancelar</p>
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="enter-session"
+          id="enter-session"
+          onClick={enterSession}
+        >
+          <p>PRONTO PARA A SESSÃO</p>
+        </button>
+      )}
     </div>
-  )
-}
+  );
+};
 
 export default Watch;

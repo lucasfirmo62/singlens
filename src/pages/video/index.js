@@ -1,664 +1,815 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './styles.css';
-import { FaPlay } from 'react-icons/fa';
-import { FaPause } from 'react-icons/fa';
-import { BsArrowsAngleExpand } from 'react-icons/bs';
-import { BsArrowsAngleContract } from 'react-icons/bs';
-import { MdOutlineArrowBackIosNew } from 'react-icons/md';
-import { MdOutlineArrowForwardIos } from 'react-icons/md';
-import { MdOutlineSubtitles } from 'react-icons/md';
+
+import { FaPlay, FaPause } from 'react-icons/fa';
+import {
+  BsArrowsAngleExpand,
+  BsArrowsAngleContract
+} from 'react-icons/bs';
+import {
+  MdOutlineArrowBackIosNew,
+  MdOutlineArrowForwardIos,
+  MdOutlineSubtitles
+} from 'react-icons/md';
 import { BiArrowBack } from 'react-icons/bi';
+
 import { removeQuote } from '../../assistant';
 import api from '../../api';
 
-var stateResume = false
-var stateSubtitle = true
-var stateAutoPlay = true
+function getMovieId() {
+  const path = window.location.pathname;
+  const position = path.indexOf('watch-play/');
 
+  return position !== -1
+    ? path.substring(position + 11).split('/')[0]
+    : '';
+}
 
-function usePlayerState($VideoPlayer) {
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) {
+    return '00:00:00';
+  }
 
-  setTimeout(function () {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
 
-    if ((document.getElementById("time-left-show").innerHTML).length < 3) {
-      document.getElementById('load').style.display = "block"
-    }
-    else {
-      document.getElementById('load').style.display = "none"
-    }
+  return [hours, minutes, remainingSeconds]
+    .map(value => String(value).padStart(2, '0'))
+    .join(':');
+}
 
-  }, 100);
+function timeToSeconds(time) {
+  const parts = time.split(':').map(Number);
 
+  if (parts.length !== 3 || parts.some(Number.isNaN)) {
+    return 0;
+  }
 
-  const [userUtility, setUserUtility] = useState([]);
+  return parts[0] * 3600 + parts[1] * 60 + parts[2];
+}
 
+function usePlayerState(videoRef, idMovie) {
+  const [userUtility, setUserUtility] = useState({ resume: [] });
+  const [playerState, setPlayerState] = useState({
+    playing: false,
+    percentage: 0
+  });
 
-  var idUser = removeQuote(localStorage.getItem('IdUser'))
+  const lastSavedTime = useRef('');
+  const idUser = removeQuote(localStorage.getItem('IdUser') || '');
 
+  const [subtitleText, setSubtitleText] = useState('');
+  const [subtitleEnabled, setSubtitleEnabled] = useState(true);
+
+  // Verifica se o usuário está autenticado.
   useEffect(() => {
-    const url = `https://brave-red-blazer.cyclic.app/auth/${idUser}`
-    fetch(url)
-      .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setUserUtility(await data);
+    const userVerify = removeQuote(localStorage.getItem('user') || '');
+
+    if (userVerify.length < 10) {
+      window.location.replace('/login');
+    }
+  }, []);
+
+  // Busca os dados do usuário.
+  useEffect(() => {
+    if (!idUser) return;
+
+    let active = true;
+
+    api.get(`/auth/${idUser}`)
+      .then(response => {
+        if (!active) return;
+
+        const data = response.data || {};
+        setUserUtility({
+          ...data,
+          resume: Array.isArray(data.resume) ? data.resume : []
+        });
       })
-  }, [])
+      .catch(error => {
+        console.error('Erro ao buscar dados do usuário:', error);
+      });
 
-  var UserUtilityResume;
+    return () => {
+      active = false;
+    };
+  }, [idUser]);
 
-  UserUtilityResume = userUtility.resume;
-
-  var percentageTimeResume;
-  var secoundTimeResume;
-
-  var url = window.location.href
-
-  var position = url.indexOf("watch-play/");
-  var idmv = url.substr(position + 11, 100);
-  var aux
-
-  if (UserUtilityResume?.find(movieMark => movieMark?.idMovie === idmv)) {
-    if (stateResume === false) {
-      aux = UserUtilityResume?.find(movieMark => movieMark?.idMovie === idmv)
-      percentageTimeResume = aux?.currentTimeMovie
-
-      secoundTimeResume = aux?.timeMovie
-      stateResume = true
-      $VideoPlayer.current.currentTime = secoundTimeResume
-    }
-  }
-
-  var userVerify = removeQuote(localStorage.getItem('user'))
-
-  if (userVerify.length < 10) {
-    window.location.replace(`/login`)
-  }
-
-  const [playerState, setPlayerState] = useState({ playing: false, percentage: 0 });
-
+  // Recupera o ponto em que o usuário parou de assistir.
   useEffect(() => {
-    playerState.playing ? $VideoPlayer.current.play() : $VideoPlayer.current.pause()
-  }, [
-    $VideoPlayer,
-    playerState.playing
-  ]);
+    const video = videoRef.current;
 
+    if (!video || !userUtility.resume.length) return;
 
-  function playPause() {
-    setPlayerState({
-      ...playerState,
-      playing: !playerState.playing,
+    const savedMovie = userUtility.resume.find(
+      movie => movie?.idMovie === idMovie
+    );
 
-    })
-  }
+    if (!savedMovie || !Number.isFinite(Number(savedMovie.timeMovie))) {
+      return;
+    }
 
-  if (stateAutoPlay === true) {
-    setTimeout(function () {
+    const restorePosition = () => {
+      video.currentTime = Number(savedMovie.timeMovie);
+    };
 
-      playPause()
-      stateAutoPlay = false;
+    if (video.readyState >= 1) {
+      restorePosition();
+    } else {
+      video.addEventListener('loadedmetadata', restorePosition, {
+        once: true
+      });
+    }
+
+    return () => {
+      video.removeEventListener('loadedmetadata', restorePosition);
+    };
+  }, [userUtility.resume, videoRef, idMovie]);
+
+  // Carrega o arquivo de legendas.
+  useEffect(() => {
+    if (!idMovie) return;
+
+    let active = true;
+
+    fetch(
+      `https://raw.githubusercontent.com/moviesSubtitlesSrt/Movies-Subtitles/main/${idMovie}.txt`
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Legenda não encontrada');
+        }
+
+        return response.text();
+      })
+      .then(text => {
+        if (active) {
+          setSubtitleText(text);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setSubtitleText('');
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [idMovie]);
+
+  // Inicia a reprodução automaticamente.
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setPlayerState(previous => ({
+        ...previous,
+        playing: true
+      }));
     }, 1000);
 
-  }
+    return () => clearTimeout(timeout);
+  }, []);
 
+  // Controla a reprodução e a pausa.
+  useEffect(() => {
+    const video = videoRef.current;
 
-  function searchByEnter(stringSubtitle, enter) {
-    var x = 0
-    for (x in stringSubtitle) {
-      if (stringSubtitle[x] === enter) {
-        return x;
+    if (!video) return;
+
+    if (playerState.playing) {
+      video.play().catch(() => {
+        setPlayerState(previous => ({
+          ...previous,
+          playing: false
+        }));
+      });
+    } else {
+      video.pause();
+    }
+  }, [videoRef, playerState.playing]);
+
+  const playPause = useCallback(() => {
+    setPlayerState(previous => ({
+      ...previous,
+      playing: !previous.playing
+    }));
+  }, []);
+
+  // Localiza a legenda correspondente ao tempo atual.
+  const updateSubtitle = useCallback((currentTime) => {
+    if (!subtitleEnabled || !subtitleText) {
+      const subtitleElement = document.getElementById('subtitle-render');
+
+      if (subtitleElement) {
+        subtitleElement.style.display = 'none';
+      }
+
+      return;
+    }
+
+    const subtitleElement = document.getElementById('subtitle-render');
+
+    if (!subtitleElement) return;
+
+    const blocks = subtitleText.split(/\r?\n\r?\n/);
+    let currentSubtitle = '';
+
+    for (const block of blocks) {
+      const lines = block.split(/\r?\n/);
+      const timeLine = lines.find(line => line.includes('-->'));
+
+      if (!timeLine) continue;
+
+      const times = timeLine.split('-->').map(value => value.trim());
+      const startTime = timeToSeconds(times[0].replace(',', '.').split('.')[0]);
+      const endTime = timeToSeconds(times[1].replace(',', '.').split('.')[0]);
+
+      if (currentTime >= startTime && currentTime <= endTime) {
+        currentSubtitle = lines
+          .filter(line => line !== timeLine && !/^\d+$/.test(line.trim()))
+          .join(' ')
+          .trim();
+
+        break;
       }
     }
-    console.log("não foi encontrado")
-  }
 
-  function searchNumber(stringSubtitle) {
-    var x = 0
-    for (x in stringSubtitle) {
-      if ((stringSubtitle[x] === '\n')) {
-        return x + 1;
+    if (currentSubtitle) {
+      subtitleElement.textContent = currentSubtitle;
+      subtitleElement.style.display = 'block';
+      subtitleElement.style.animation = 'none';
+
+      if (currentSubtitle.length > 43) {
+        subtitleElement.style.animation =
+          'subtitleRenderHidden 0s 1.2s forwards';
+      } else if (currentSubtitle.length > 30) {
+        subtitleElement.style.animation =
+          'subtitleRenderHidden 0s 0.7s forwards';
+      } else if (currentSubtitle.length > 20) {
+        subtitleElement.style.animation =
+          'subtitleRenderHidden 0s 0.6s forwards';
+      } else if (currentSubtitle.length > 1) {
+        subtitleElement.style.animation =
+          'subtitleRenderHidden 0s 0.3s forwards';
       }
+    } else {
+      subtitleElement.style.display = 'none';
     }
-    console.log("não foi encontrado")
-  }
+  }, [subtitleEnabled, subtitleText]);
 
-  var timeVerify = '0'
-  var currentSubSaver = ''
-  function subtitle(ctime) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        var indexTime = this.responseText
-        if (indexTime.indexOf(`--> ${ctime}`) === false) {
-          document.getElementById('subtitle-render').style.display = 'none';
-        }
-        if (indexTime.includes(`--> ${ctime}`) === true) {
+  // Atualiza o tempo e salva o progresso do filme.
+  const handleTimeUpdate = useCallback(() => {
+    const video = videoRef.current;
 
-          var verifyReloadSub = indexTime.indexOf(`--> ${ctime}`)
-          var stringSearch = indexTime.substr(verifyReloadSub)
-          if (stringSearch.indexOf(`\n${ctime}`)) {
-            var initx = searchByEnter(stringSearch, '\n')
-            initx = initx
-            stringSearch = stringSearch.substr(initx, searchNumber(stringSearch))
-            var endx = searchByEnter(stringSearch, '\n')
-            stringSearch = stringSearch.replace(/[^a-z^A-Z^ãêéèóáàôóòêõẽÉÔçÇíîìú^ÁÀÂÓÒÔÉÈÊÌÍÎÙÚÛÃÕŨĨẼ.?!^,-]/g, '\n')
-            var posCut = stringSearch.indexOf("\n,\n")
-            stringSearch = stringSearch.substr(0, posCut)
-            document.getElementById("subtitle-render").innerHTML = stringSearch
-            document.getElementById('subtitle-render').style.display = 'block';
-            if ((stringSearch.length > 30) && (stringSearch.length < 43)) {
-              document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.7s forwards';
-            } if ((stringSearch.length > 1) && (stringSearch.length <= 20)) {
-              document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.3s forwards';
-            } if ((stringSearch.length > 20) && (stringSearch.length <= 30)) {
-              document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 0.6s forwards';
-            } if ((stringSearch.length > 43)) {
-              document.getElementById('subtitle-render').style.animation = 'subtitleRenderHidden 0s 1.2s forwards';
-            }
-          }
-        }
-        if (indexTime.includes(`\n${ctime}`) === true) {
-          var posTime = indexTime.indexOf(ctime)
-          var stringSearch = indexTime.substr(posTime)
-          var teste = indexTime.substr(posTime, 30)
-          console.log(teste)
-          var initx = searchByEnter(stringSearch, '\n')
-          initx = initx
-          stringSearch = stringSearch.substr(initx, searchNumber(stringSearch))
-          var endx = searchByEnter(stringSearch, '\n')
-          stringSearch = stringSearch.replace(/[^a-z^A-Z^ãêéèóáàôóòêõẽÉÔçÇíîìú^ÁÀÂÓÒÔÉÈÊÌÍÎÙÚÛÃÕŨĨẼ.?!^,-]/g, '\n')
-          var posCut = stringSearch.indexOf("\n,\n")
-          stringSearch = stringSearch.substr(0, posCut)
-          document.getElementById("subtitle-render").innerHTML = stringSearch
-          document.getElementById('subtitle-render').style.animation = 'subtitleRenderShow 0s 0s forwards';
-        }
-      }
+    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
+      return;
+    }
+
+    const currentTime = video.currentTime;
+    const duration = video.duration;
+    const currentPercentage = (currentTime / duration) * 100;
+
+    const currentTimeElement = document.getElementById('current-time-show');
+    const timeLeftElement = document.getElementById('time-left-show');
+
+    if (currentTimeElement) {
+      currentTimeElement.textContent = formatTime(currentTime);
+    }
+
+    if (timeLeftElement) {
+      timeLeftElement.textContent = formatTime(duration);
+    }
+
+    updateSubtitle(currentTime);
+
+    setPlayerState(previous => ({
+      ...previous,
+      percentage: currentPercentage
+    }));
+
+    const date = new Date();
+    const second = date.getSeconds();
+    const milliseconds = date.getMilliseconds();
+
+    const shouldSave =
+      (second === 30 || second === 59) && milliseconds <= 250;
+
+    const saveKey = `${date.getMinutes()}-${second}`;
+
+    if (!shouldSave || lastSavedTime.current === saveKey || !idUser) {
+      return;
+    }
+
+    lastSavedTime.current = saveKey;
+
+    const currentResume = Array.isArray(userUtility.resume)
+      ? [...userUtility.resume]
+      : [];
+
+    const existingIndex = currentResume.findIndex(
+      movie => movie?.idMovie === idMovie
+    );
+
+    if (currentPercentage >= 98) {
+      const updatedResume = currentResume.filter(
+        movie => movie?.idMovie !== idMovie
+      );
+
+      setUserUtility(previous => ({
+        ...previous,
+        resume: updatedResume
+      }));
+
+      api.post(`/auth/resume/${idUser}`, {
+        resume: updatedResume
+      }).catch(error => {
+        console.error('Erro ao salvar progresso:', error);
+      });
+
+      return;
+    }
+
+    const resumeMark = {
+      idMovie,
+      currentTimeMovie: currentPercentage,
+      timeMovie: currentTime
     };
-    xhttp.open("GET", `https://raw.githubusercontent.com/moviesSubtitlesSrt/Movies-Subtitles/main/${idmv}.txt`, true);
-    xhttp.send();
-    timeVerify = ctime
-  }
 
-
-  function handleTimeUpdate() {
-
-
-
-    var currentPercentage = ($VideoPlayer.current.currentTime / $VideoPlayer.current.duration) * 100;
-
-
-    var hour = Math.floor($VideoPlayer.current.currentTime / 3600);
-    var mins = Math.floor($VideoPlayer.current.currentTime / 60);
-    var secs = Math.floor($VideoPlayer.current.currentTime % 60);
-    var tenths = $VideoPlayer.current.currentTime % 1;
-
-    var hourLeft = Math.floor($VideoPlayer.current?.duration / 3600);
-    var minsLeft = Math.floor($VideoPlayer.current?.duration / 60);
-    var secsLeft = Math.floor($VideoPlayer.current?.duration % 60);
-
-
-
-    if (hour < 10) {
-      hour = "0" + hour;
-    }
-    if (mins < 10) {
-      mins = "0" + mins;
-    }
-    if ((mins >= 60) && (mins < 120)) {
-      mins = mins - 60;
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-    }
-    if ((mins >= 120) && (mins < 180)) {
-      mins = mins - 120;
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-    }
-    if ((mins >= 180) && (mins < 240)) {
-      mins = mins - 180;
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-    }
-    if (secs < 10) {
-      secs = "0" + secs;
+    if (existingIndex !== -1) {
+      currentResume.splice(existingIndex, 1);
     }
 
+    currentResume.unshift(resumeMark);
 
-    if (hourLeft < 10) {
-      hourLeft = "0" + hourLeft;
-    }
-    if (minsLeft < 10) {
-      minsLeft = "0" + minsLeft;
-    }
-    if ((minsLeft >= 60) && (minsLeft < 120)) {
-      minsLeft = minsLeft - 60;
-      if (minsLeft < 10) {
-        minsLeft = "0" + minsLeft;
-      }
-    }
-    if ((minsLeft >= 120) && (minsLeft < 180)) {
-      minsLeft = minsLeft - 120;
-      if (minsLeft < 10) {
-        minsLeft = "0" + minsLeft;
-      }
-    }
-    if ((minsLeft >= 180) && (minsLeft < 240)) {
-      minsLeft = minsLeft - 180;
-      if (minsLeft < 10) {
-        minsLeft = "0" + minsLeft;
-      }
-    }
-    if (secsLeft < 10) {
-      secsLeft = "0" + secsLeft;
-    }
+    setUserUtility(previous => ({
+      ...previous,
+      resume: currentResume
+    }));
 
-    tenths = tenths.toString()
-    tenths = tenths.substr(2, 3)
+    api.post(`/auth/resume/${idUser}`, {
+      resume: currentResume
+    }).catch(error => {
+      console.error('Erro ao salvar progresso:', error);
+    });
+  }, [
+    videoRef,
+    updateSubtitle,
+    userUtility.resume,
+    idMovie,
+    idUser
+  ]);
 
+  // Altera a posição do vídeo pela barra de progresso.
+  const handleChangePercentage = useCallback((event) => {
+    const video = videoRef.current;
 
-    var currentTranform = hour + ":" + mins + ":" + secs
-    currentTranform = currentTranform.toString()
-    var lasSub = subtitle(currentTranform)
+    if (!video || !Number.isFinite(video.duration)) return;
 
+    const timeClick = Number(event.target.value);
 
+    video.currentTime = (video.duration / 100) * timeClick;
 
-    document.getElementById("current-time-show").innerHTML = hour + ":" + mins + ":" + secs;
-    document.getElementById("time-left-show").innerHTML = hourLeft + ":" + minsLeft + ":" + secsLeft;
+    setPlayerState(previous => ({
+      ...previous,
+      percentage: timeClick
+    }));
+  }, [videoRef]);
 
-
-    const d = new Date();
-
-    var secountSave = d.getSeconds();
-
-    var millisecondSave = d.getMilliseconds();
-
-    var arrayResume = userUtility.resume;
-
-
-    if (((secountSave === 30) && (millisecondSave <= 250)) ||
-      ((secountSave === 59) && (millisecondSave <= 250))) {
-
-      if (currentPercentage >= 98) {
-
-        const result = arrayResume.find(movieMark => movieMark.idMovie === idmv)
-
-        const index = arrayResume.indexOf(result);
-        if (index > -1) {
-          arrayResume.splice(index, 1);
-        }
-
-        const data = { resume: arrayResume }
-
-        api.post(`/auth/resume/${idUser}`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        return;
-      }
-      if (arrayResume.find(movieMark => movieMark.idMovie === idmv)) {
-        const result = arrayResume.find(movieMark => movieMark.idMovie === idmv)
-
-        const index = arrayResume.indexOf(result);
-        if (index > -1) {
-          arrayResume.splice(index, 1);
-        }
-
-        var resumeMark = {
-          idMovie: idmv,
-          currentTimeMovie: currentPercentage,
-          timeMovie: $VideoPlayer.current.currentTime
-        }
-        arrayResume.unshift(resumeMark)
-
-        const data = { resume: arrayResume }
-
-        api.post(`/auth/resume/${idUser}`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-      } else {
-        var resumeMark = {
-          idMovie: idmv,
-          currentTimeMovie: currentPercentage,
-          timeMovie: $VideoPlayer.current.currentTime
-        }
-        arrayResume.unshift(resumeMark)
-
-        const data = { resume: arrayResume }
-
-        api.post(`/auth/resume/${idUser}`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-      }
-
-
-
-    }
-
-
-    setPlayerState({
-      ...playerState,
-      percentage: currentPercentage,
-    })
-  }
-
-
-  function handleChangePercentage(changeInput) {
-
-    const timeClick = changeInput.target.value
-    $VideoPlayer.current.currentTime = ($VideoPlayer.current.duration / 100) * timeClick;
-
-    setPlayerState({
-      ...playerState,
-      percentage: timeClick,
-    })
-
-  }
+  const toggleSubtitles = useCallback(() => {
+    setSubtitleEnabled(previous => !previous);
+  }, []);
 
   return {
     playerState,
     playPause,
     handleTimeUpdate,
     handleChangePercentage,
-  }
-
+    toggleSubtitles,
+    subtitleEnabled
+  };
 }
 
 const PlayerVideo = () => {
+  const videoRef = useRef(null);
+  const timerRef = useRef(null);
+  const countRef = useRef(0);
+  const contentRef = useRef(null);
 
-  const $VideoPlayer = useRef(null);
-  const [movieWatch, setMovie] = useState([]);
-  const [play, setPlay] = useState([]);
+  const [movieWatch, setMovie] = useState({});
+  const [play, setPlay] = useState({ movies: [] });
   const [filmBy, setFilmBy] = useState([]);
-  const [cast, setCast] = useState([])
+  const [cast, setCast] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-
-
+  const idMovie = getMovieId();
 
   const {
     playerState,
     playPause,
     handleTimeUpdate,
     handleChangePercentage,
-  } = usePlayerState($VideoPlayer)
+    toggleSubtitles,
+    subtitleEnabled
+  } = usePlayerState(videoRef, idMovie);
 
-
+  // Busca as informações do filme.
   useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
+    if (!idMovie) return;
+
+    const url = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`;
+
     fetch(url)
       .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setMovie(await data);
-      })
-  }, [])
+      .then(data => setMovie(data))
+      .catch(error => {
+        console.error('Erro ao buscar filme:', error);
+      });
+  }, [idMovie]);
 
+  // Busca a equipe técnica.
   useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}/credits?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
+    if (!idMovie) return;
+
+    const url = `https://api.themoviedb.org/3/movie/${idMovie}/credits?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`;
+
     fetch(url)
       .then(response => response.json())
-      .then(json => json.crew)
-      .then(async (data) => {
-        setFilmBy(await data);
-      })
-  }, [])
+      .then(data => setFilmBy(Array.isArray(data.crew) ? data.crew : []))
+      .catch(error => {
+        console.error('Erro ao buscar equipe técnica:', error);
+      });
+  }, [idMovie]);
 
+  // Busca o elenco.
   useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}/credits?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
+    if (!idMovie) return;
+
+    const url = `https://api.themoviedb.org/3/movie/${idMovie}/credits?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`;
+
     fetch(url)
       .then(response => response.json())
-      .then(json => json.cast)
-      .then(async (data) => {
-        setCast(await data);
-      })
-  }, [])
+      .then(data => setCast(Array.isArray(data.cast) ? data.cast : []))
+      .catch(error => {
+        console.error('Erro ao buscar elenco:', error);
+      });
+  }, [idMovie]);
 
-
-  var url = window.location.href
-
-  var position = url.indexOf("watch-play/");
-
-  var idMovie = url.substr(position + 11, 100);
-
+  // Busca os links dos vídeos.
   useEffect(() => {
-    const url = `https://api.npoint.io/485606789b28296238fd`
+    const url = 'https://api.npoint.io/485606789b28296238fd';
+
     fetch(url)
       .then(response => response.json())
-      .then(json => json)
-      .then(async (data) => {
-        setPlay(await data);
-      })
-  }, [])
+      .then(data => setPlay(data))
+      .catch(error => {
+        console.error('Erro ao buscar vídeos:', error);
+      });
+  }, []);
 
-  var u = 0
-  var linkWatch
+  const linkWatch = play.movies?.find(
+    movie => String(movie.id) === String(idMovie)
+  )?.watch;
 
-  for (u in play.movies) {
-    if (play.movies[u].id == idMovie) {
-      linkWatch = play.movies[u].watch;
-    }
-  }
+  // Controla a tela cheia.
+  const openFullscreen = useCallback(() => {
+    const element = contentRef.current;
 
+    if (!element) return;
 
-  var elem = document.getElementById("content-video-player");
-  function openFullscreen() {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    }
-
-    if (document.exitFullscreen) {
+    if (!document.fullscreenElement) {
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      }
+    } else if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
     }
-  }
-  var timer;
+  }, []);
 
-  function mouseStopped() {
-    document.getElementById('options-bar').style.display = 'none';
-    document.getElementById('position-back').style.display = 'none'
-    document.getElementById('subtitle-render').style.top = '85%'
-  }
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
 
-  window.addEventListener("mousemove", function () {
-    document.getElementById('options-bar').style.display = 'block';
-    document.getElementById('position-back').style.display = 'block';
-    document.getElementById('subtitle-render').style.top = '67%'
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
 
-    clearTimeout(timer);
-    timer = setTimeout(mouseStopped, 5000);
-  });
+    return () => {
+      document.removeEventListener(
+        'fullscreenchange',
+        handleFullscreenChange
+      );
+    };
+  }, []);
 
-  document.addEventListener('keydown', function (event) {
-    if (event == 32) {
-      playPause();
-    }
-    if (event == 70) {
-      openFullscreen();
-    }
-  });
+  // Exibe os controles quando o mouse se movimenta.
+  useEffect(() => {
+    const handleMouseMove = () => {
+      const optionsBar = document.getElementById('options-bar');
+      const positionBack = document.getElementById('position-back');
+      const subtitle = document.getElementById('subtitle-render');
 
-  const box = document.querySelector('.crew-cast');
-  var count = 0;
+      if (optionsBar) optionsBar.style.display = 'block';
+      if (positionBack) positionBack.style.display = 'block';
+      if (subtitle) subtitle.style.top = '67%';
 
-  const leftA = document.getElementById("low1");
-  const rigthA = document.getElementById("low2");
+      clearTimeout(timerRef.current);
 
-  function next() {
+      timerRef.current = setTimeout(() => {
+        if (optionsBar) optionsBar.style.display = 'none';
+        if (positionBack) positionBack.style.display = 'none';
+        if (subtitle) subtitle.style.top = '85%';
+      }, 5000);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  // Atalhos do teclado.
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        playPause();
+      }
+
+      if (event.key.toLowerCase() === 'f') {
+        openFullscreen();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [playPause, openFullscreen]);
+
+  // Navegação do elenco e da equipe técnica.
+  const next = () => {
+    const box = document.querySelector('.crew-cast');
+
+    if (!box) return;
+
     box.scrollBy({
       top: 0,
       left: 500,
       behavior: 'smooth'
     });
 
-    if (count <= 4) {
-      count++;
+    if (countRef.current < 5) {
+      countRef.current += 1;
     }
 
-    if (count !== 0) {
-      leftA.style.visibility = "visible";
+    const leftArrow = document.getElementById('low1');
+    const rightArrow = document.getElementById('low2');
+
+    if (leftArrow && countRef.current !== 0) {
+      leftArrow.style.visibility = 'visible';
     }
 
-    if (count >= 5) {
-      rigthA.style.visibility = "hidden";
+    if (rightArrow && countRef.current >= 5) {
+      rightArrow.style.visibility = 'hidden';
     }
-  }
+  };
 
-  function previous() {
+  const previous = () => {
+    const box = document.querySelector('.crew-cast');
+
+    if (!box) return;
+
     box.scrollBy({
       top: 0,
       left: -500,
       behavior: 'smooth'
     });
 
-    if (count >= 0) {
-      count--;
+    if (countRef.current > 0) {
+      countRef.current -= 1;
     }
 
-    if (count <= 0) {
-      leftA.style.visibility = "hidden";
+    const leftArrow = document.getElementById('low1');
+    const rightArrow = document.getElementById('low2');
+
+    if (leftArrow && countRef.current <= 0) {
+      leftArrow.style.visibility = 'hidden';
     }
 
-    if (count <= 4) {
-      rigthA.style.visibility = "visible";
+    if (rightArrow && countRef.current <= 4) {
+      rightArrow.style.visibility = 'visible';
     }
-  }
+  };
 
-
-  function goBack() {
-    window.location.replace(`/watch/${idMovie}`)
-  }
-
-  function subtitleSatteSet() {
-    if (stateSubtitle === true) {
-      stateSubtitle = false
-      return
-    }
-
-    if (stateSubtitle === false) {
-      stateSubtitle = true
-      return
-    }
-  }
-
+  const goBack = () => {
+    window.location.replace(`/watch/${idMovie}`);
+  };
 
   return (
-    <div className='content-video-player' id='content-video-player'>
-      <div id='load' className="loadingio-spinner-rolling-7fylwl190qh"><div className="ldio-qjgygy3qvv">
-        <div></div>
-      </div></div>
+    <div
+      className="content-video-player"
+      id="content-video-player"
+      ref={contentRef}
+    >
+      <div
+        id="load"
+        className="loadingio-spinner-rolling-7fylwl190qh"
+      >
+        <div className="ldio-qjgygy3qvv">
+          <div></div>
+        </div>
+      </div>
+
       <video
         className="video-player"
-        ref={$VideoPlayer}
+        ref={videoRef}
         src={linkWatch}
         onTimeUpdate={handleTimeUpdate}
         onClick={playPause}
         onDoubleClick={openFullscreen}
+        onLoadedData={() => {
+          const loading = document.getElementById('load');
+
+          if (loading) {
+            loading.style.display = 'none';
+          }
+        }}
         id="videoServerWatch"
-      >
-      </video>
-      <div className='position-back' id='position-back'>
-        <div className='back-title' onClick={goBack} title='Voltar'>
-          <BiArrowBack className='back-title-arrow' />
+      />
+
+      <div className="position-back" id="position-back">
+        <div
+          className="back-title"
+          onClick={goBack}
+          title="Voltar"
+          role="button"
+          tabIndex={0}
+          onKeyDown={event => {
+            if (event.key === 'Enter') goBack();
+          }}
+        >
+          <BiArrowBack className="back-title-arrow" />
         </div>
       </div>
-      <div className='options-bar' id='options-bar'>
-        <div className='crew-cast'>
-          <button id="low" onClick={previous} className="btnPreviousW">
-            <MdOutlineArrowBackIosNew onClick={previous} id="low2" className='arrows' />
+
+      <div className="options-bar" id="options-bar">
+        <div className="crew-cast">
+          <button
+            id="low1"
+            onClick={previous}
+            className="btnPreviousW"
+            type="button"
+          >
+            <MdOutlineArrowBackIosNew className="arrows" />
           </button>
-          <div className='directing'>
+
+          <div className="directing">
             <ul className="list-persons">
-              {filmBy.map((directors, index) => (
-                <li className="title-item" key={index}>
-                  {
-                    (directors.job == "Director") ?
-                      <div className='card-person'>
-                        <img className='img-person' src={`https://image.tmdb.org/t/p/w92/${directors.profile_path}`} />
-                        <div className='name-person'>
-                          {directors.name}
-                        </div>
-                        <div className='working'>
-                          {directors.job}
-                        </div>
-                      </div> : null
-                  }
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className='casting'>
-            <ul className="list-persons">
-              {cast.slice(0, 10).map((actors, index) => (
-                <li className="title-item" key={index}>
-                  {
-                    <div className='card-person'>
-                      <img className='img-person' src={`https://image.tmdb.org/t/p/w92/${actors.profile_path}`} />
-                      <div className='name-person'>
-                        {actors.name}
-                      </div>
-                      <div className='working'>
-                        {actors.character}
+              {filmBy
+                .filter(director => director.job === 'Director')
+                .map((director, index) => (
+                  <li className="title-item" key={director.id || index}>
+                    <div className="card-person">
+                      <img
+                        className="img-person"
+                        src={`https://image.tmdb.org/t/p/w92/${director.profile_path}`}
+                        alt={director.name || 'Diretor'}
+                      />
+
+                      <div className="name-person">
+                        {director.name}
                       </div>
 
+                      <div className="working">
+                        {director.job}
+                      </div>
                     </div>
-                  }
+                  </li>
+                ))}
+            </ul>
+          </div>
+
+          <div className="casting">
+            <ul className="list-persons">
+              {cast.slice(0, 10).map((actor, index) => (
+                <li className="title-item" key={actor.id || index}>
+                  <div className="card-person">
+                    <img
+                      className="img-person"
+                      src={`https://image.tmdb.org/t/p/w92/${actor.profile_path}`}
+                      alt={actor.name || 'Ator'}
+                    />
+
+                    <div className="name-person">
+                      {actor.name}
+                    </div>
+
+                    <div className="working">
+                      {actor.character}
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
-          <button className="btnNextW" id="low" onClick={next}>
-            <MdOutlineArrowForwardIos onClick={next} id="low2" className='arrows' />
+
+          <button
+            className="btnNextW"
+            id="low2"
+            onClick={next}
+            type="button"
+          >
+            <MdOutlineArrowForwardIos className="arrows" />
           </button>
         </div>
+
         <input
-          type='range'
-          min='0'
-          max='100'
+          type="range"
+          min="0"
+          max="100"
           onChange={handleChangePercentage}
           value={playerState.percentage}
-          className='progress-video'
+          className="progress-video"
+          aria-label="Progresso do vídeo"
         />
-        <div className='buttons'>
-          <div className='title-movie-watch'>
+
+        <div className="buttons">
+          <div className="title-movie-watch">
             {movieWatch.title}
           </div>
-          <div className='current-time-show' id='current-time-show'></div>
-          <div onClick={playPause} id='play-pause' className='play-pause'>
+
+          <div
+            className="current-time-show"
+            id="current-time-show"
+          >
+            00:00:00
+          </div>
+
+          <div
+            onClick={playPause}
+            id="play-pause"
+            className="play-pause"
+            role="button"
+            tabIndex={0}
+            onKeyDown={event => {
+              if (event.key === 'Enter') playPause();
+            }}
+          >
             {playerState.playing ? <FaPause /> : <FaPlay />}
           </div>
-          <div className='time-left-show' id='time-left-show'></div>
-          <div className='back-subtitle' onClick={subtitleSatteSet} title='Áudio e Legenda'>
-            <MdOutlineSubtitles className='subtitle-info' />
+
+          <div className="time-left-show" id="time-left-show">
+            00:00:00
           </div>
-          <div className='fullscreen' onClick={openFullscreen}>
-            {elem ? <BsArrowsAngleContract className='fullscreen-into' /> : <BsArrowsAngleExpand className='fullscreen-into' />}
+
+          <div
+            className="back-subtitle"
+            onClick={toggleSubtitles}
+            title="Áudio e Legenda"
+            role="button"
+            tabIndex={0}
+            onKeyDown={event => {
+              if (event.key === 'Enter') toggleSubtitles();
+            }}
+          >
+            <MdOutlineSubtitles className="subtitle-info" />
+          </div>
+
+          <div
+            className="fullscreen"
+            onClick={openFullscreen}
+            role="button"
+            tabIndex={0}
+            onKeyDown={event => {
+              if (event.key === 'Enter') openFullscreen();
+            }}
+          >
+            {isFullscreen
+              ? <BsArrowsAngleContract className="fullscreen-into" />
+              : <BsArrowsAngleExpand className="fullscreen-into" />
+            }
           </div>
         </div>
       </div>
+
       <div>
-        {(stateSubtitle === true) ?
-          <div className='subtitle-render' id='subtitle-render'></div>
-          :
-          <div></div>
-        }
+        {subtitleEnabled && (
+          <div
+            className="subtitle-render"
+            id="subtitle-render"
+          />
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default PlayerVideo;

@@ -1,187 +1,242 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState } from 'react';
 import './styles.css';
-import { removeQuote } from '../../assistant';
 import api from '../../api';
 
-
 const SignUp = () => {
+    const avatars = {
+        '1': 'nPO29qu.jpeg',
+        '2': 'oYBkmhj.jpeg',
+        '3': '5Pcx3Vq.jpeg',
+        '4': 'vAP7kdO.jpeg',
+        '5': 'sZyMbsu.jpeg',
+        '6': 'mDLxGQ9.jpeg'
+    };
 
-    var avatarOne = "nPO29qu.jpeg";
-    var avatarTwo = "oYBkmhj.jpeg";
-    var avatarThree = "5Pcx3Vq.jpeg";
-    var avatarFour = "vAP7kdO.jpeg";
-    var avatarFive = "sZyMbsu.jpeg";
-    var avtarSix = "mDLxGQ9.jpeg";
+    const [stage, setStage] = useState(1);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [selectedAvatar, setSelectedAvatar] = useState('1');
+    const [loading, setLoading] = useState(false);
 
-    var nameUSer = document.getElementById('name')?.value
+    function nextStage() {
+        if (stage === 1) {
+            if (!email.trim() || !name.trim()) {
+                alert('Preencha seu email e nome para continuar.');
+                return;
+            }
 
-    var avatarUserAtribute = '';
+            setStage(2);
+            return;
+        }
 
+        if (stage === 2) {
+            if (!password || !confirmPassword) {
+                alert('Preencha os dois campos de senha.');
+                return;
+            }
 
-    function selectAvatar(avt) {
-        avatarUserAtribute = avt.target.id
-        console.log(avt.target.id)
-        if (avt.target.id === "1") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avatarOne}`
-        }
-        if (avt.target.id === "2") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avatarTwo}`
-        }
-        if (avt.target.id === "3") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avatarThree}`
-        }
-        if (avt.target.id === "4") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avatarFour}`
-        }
-        if (avt.target.id === "5") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avatarFive}`
-        }
-        if (avt.target.id === "6") {
-            document.getElementById('avatar-home').src = `https://i.imgur.com/${avtarSix}`
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem.');
+                return;
+            }
+
+            setStage(3);
         }
     }
 
     async function sendNewUser() {
-        var name = document.getElementById('name').value
-        var email = document.getElementById('email').value
-        var password = document.getElementById('password').value
-        var avatar = avatarUserAtribute
-
-        if(avatar === ''){
-            avatar = '1'
-        }
-
         const data = {
-            name,
-            email,
+            name: name.trim(),
+            email: email.trim(),
             password,
-            avatar
-        }
+            avatar: selectedAvatar
+        };
 
-        api.post(`/auth/register`, data, {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        try {
+            setLoading(true);
 
+            await api.post('/auth/register', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-        document.getElementById('load').style.display = "block"
-
-
-        setTimeout(function () {
-            document.getElementById('load').style.display = "none"
-            window.location.replace(`/login`)
-        }, 2000);
-
-    }
-
-    async function stage(step) {
-        if (step === "1") {
-            document.getElementById('stage-one').style.display = 'none'
-            document.getElementById('stage-two').style.display = 'block'
-            nameUSer = document.getElementById('name').value
-        }
-        if (step === "2") {
-            document.getElementById('stage-two').style.display = 'none'
-            document.getElementById('stage-three').style.display = 'block'
-        }
-        if (step === "3") {
-            document.getElementById('stage-three').style.display = 'none'
-            sendNewUser()
+            window.location.replace('/login');
+        } catch (error) {
+            console.error('Erro ao cadastrar usuário:', error);
+            alert('Não foi possível criar sua conta. Tente novamente.');
+            setLoading(false);
         }
     }
 
+    function selectAvatar(event) {
+        setSelectedAvatar(event.currentTarget.id);
+    }
 
     return (
-        <div className='content-sign-up'>
-            <div id='load' className="loadingio-spinner-rolling-7fylwl190qh"><div className="ldio-qjgygy3qvv">
-                <div></div>
-            </div></div>
-            <div className='boxer-sign-up'>
-                <div className='content-form-sign-up'>
-                    <div id='stage-one' className='stage-one'>
-                        <p>Crie Sua conta 1 de 3</p>
-                        <div className='coll'>
-                            <input
-                                placeholder='Seu Email'
-                                id="email"
-                                type="text"
+        <div className="content-sign-up">
+            <div
+                id="load"
+                className="loadingio-spinner-rolling-7fylwl190qh"
+                style={{ display: loading ? 'block' : 'none' }}
+            >
+                <div className="ldio-qjgygy3qvv">
+                    <div></div>
+                </div>
+            </div>
 
-                            />
-                        </div>
-                        <div className='coll'>
-                            <input
-                                placeholder='Seu nome ou apelido'
-                                id="name"
-                                type="text"
-                            />
-                        </div>
-                        <center>
-                            <div
-                                value={1}
-                                className="button-big"
-                                onClick={() => stage("1")}
-                            >
-                                PRÓXIMO
-                            </div>
-                        </center>
-                    </div>
-                    <div id='stage-two' className='stage-two'>
-                        <p>Crie Sua conta 2 de 3</p>
-                        <div className='coll'>
-                            <input
-                                placeholder='Crie sua senha'
-                                id="password"
-                                type="password"
+            <div className="boxer-sign-up">
+                <div className="content-form-sign-up">
 
-                            />
-                        </div>
-                        <div className='coll'>
-                            <input
-                                placeholder='Digite novamente sua senha'
-                                id="consfirm-password"
-                                type="password"
-                            />
-                        </div>
-                        <center>
-                            <div
-                                value={1}
-                                className="button-big"
-                                onClick={() => stage("2")}
-                            >
-                                PRÓXIMO
+                    {stage === 1 && (
+                        <div id="stage-one" className="stage-one">
+                            <p>Crie Sua conta 1 de 3</p>
+
+                            <div className="coll">
+                                <input
+                                    placeholder="Seu Email"
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={event => setEmail(event.target.value)}
+                                />
                             </div>
-                        </center>
-                    </div>
-                    <div id='stage-three' className='stage-three'>
-                        <p>Crie Sua conta 3 de 3</p>
-                        <div className='avatars-select'>
-                            <p>Escolha seu avatar</p>
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avatarOne}`} id='1' value='1' className='select-avatars' />
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avatarTwo}`} id='2' value='2' className='select-avatars' />
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avatarThree}`} id='3' value='3' className='select-avatars' />
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avatarFour}`} id='4' value='4' className='select-avatars' />
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avatarFive}`} id='5' value='5' className='select-avatars' />
-                            <img onClick={(e) => selectAvatar(e)} src={`https://i.imgur.com/${avtarSix}`} id='6' value='6' className='select-avatars' />
-                        </div>
-                        <div id='user-preview' className='user-preview'>
-                            <img className='avatar' id='avatar-home' src={`https://i.imgur.com/${avatarOne}`}></img>
-                            <p>Você</p>
-                        </div>
-                        <center>
-                            <div
-                                value={1}
-                                className="button-big"
-                                onClick={() => stage("3")}
-                            >
-                                CRIAR CONTA
+
+                            <div className="coll">
+                                <input
+                                    placeholder="Seu nome ou apelido"
+                                    id="name"
+                                    type="text"
+                                    value={name}
+                                    onChange={event => setName(event.target.value)}
+                                />
                             </div>
-                        </center>
-                    </div>
+
+                            <center>
+                                <div
+                                    className="button-big"
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={nextStage}
+                                    onKeyDown={event => {
+                                        if (event.key === 'Enter' || event.key === ' ') {
+                                            event.preventDefault();
+                                            nextStage();
+                                        }
+                                    }}
+                                >
+                                    PRÓXIMO
+                                </div>
+                            </center>
+                        </div>
+                    )}
+
+                    {stage === 2 && (
+                        <div id="stage-two" className="stage-two">
+                            <p>Crie Sua conta 2 de 3</p>
+
+                            <div className="coll">
+                                <input
+                                    placeholder="Crie sua senha"
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={event => setPassword(event.target.value)}
+                                />
+                            </div>
+
+                            <div className="coll">
+                                <input
+                                    placeholder="Digite novamente sua senha"
+                                    id="confirm-password"
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={event => setConfirmPassword(event.target.value)}
+                                />
+                            </div>
+
+                            <center>
+                                <div
+                                    className="button-big"
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={nextStage}
+                                    onKeyDown={event => {
+                                        if (event.key === 'Enter' || event.key === ' ') {
+                                            event.preventDefault();
+                                            nextStage();
+                                        }
+                                    }}
+                                >
+                                    PRÓXIMO
+                                </div>
+                            </center>
+                        </div>
+                    )}
+
+                    {stage === 3 && (
+                        <div id="stage-three" className="stage-three">
+                            <p>Crie Sua conta 3 de 3</p>
+
+                            <div className="avatars-select">
+                                <p>Escolha seu avatar</p>
+
+                                {Object.entries(avatars).map(([id, avatar]) => (
+                                    <img
+                                        key={id}
+                                        onClick={selectAvatar}
+                                        src={`https://i.imgur.com/${avatar}`}
+                                        id={id}
+                                        className="select-avatars"
+                                        alt={`Selecionar avatar ${id}`}
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={event => {
+                                            if (event.key === 'Enter' || event.key === ' ') {
+                                                event.preventDefault();
+                                                setSelectedAvatar(id);
+                                            }
+                                        }}
+                                    />
+                                ))}
+                            </div>
+
+                            <div id="user-preview" className="user-preview">
+                                <img
+                                    className="avatar"
+                                    id="avatar-home"
+                                    src={`https://i.imgur.com/${avatars[selectedAvatar]}`}
+                                    alt="Avatar escolhido"
+                                />
+                                <p>Você</p>
+                            </div>
+
+                            <center>
+                                <div
+                                    className="button-big"
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={sendNewUser}
+                                    onKeyDown={event => {
+                                        if (event.key === 'Enter' || event.key === ' ') {
+                                            event.preventDefault();
+                                            sendNewUser();
+                                        }
+                                    }}
+                                    aria-disabled={loading}
+                                >
+                                    CRIAR CONTA
+                                </div>
+                            </center>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default SignUp;

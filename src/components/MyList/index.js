@@ -1,100 +1,95 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './styles.css';
 import CardTitle from '../../components/card-title';
 import { MdOutlineArrowBackIosNew } from 'react-icons/md';
 import { MdOutlineArrowForwardIos } from 'react-icons/md';
 
-
-
 const MyList = ({ name, titles }) => {
-
   const [movies, setMovies] = useState([]);
+  const [count, setCount] = useState(0);
 
+  const carouselRef = useRef(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     fetch(titles)
       .then(response => response.json())
-      .then(json => json.watchlist)
-      .then(async (data) => {
-        setMovies(await data);
+      .then(json => {
+        if (isMounted) {
+          setMovies(json.watchlist || []);
+        }
       })
-  }, [])
+      .catch(error => {
+        console.error('Erro ao carregar a lista:', error);
+      });
 
-  const box = document.querySelector('.list');
-  var count = 0;
-
-  const leftA = document.getElementById("low1");
-  const rigthA = document.getElementById("low2");
+    return () => {
+      isMounted = false;
+    };
+  }, [titles]);
 
   function next() {
-    box.scrollBy({
+    if (!carouselRef.current) return;
+
+    carouselRef.current.scrollBy({
       top: 0,
       left: 870,
       behavior: 'smooth'
     });
 
-    if (count <= 4) {
-      count++;
-    }
-
-    if (count !== 0) {
-      leftA.style.visibility = "visible";
-    }
-
-    if (count >= 5) {
-      rigthA.style.visibility = "hidden";
-    }
+    setCount(current => Math.min(current + 1, 5));
   }
 
   function previous() {
-    box.scrollBy({
+    if (!carouselRef.current) return;
+
+    carouselRef.current.scrollBy({
       top: 0,
       left: -870,
       behavior: 'smooth'
     });
 
-    if (count >= 0) {
-      count--;
-    }
-
-    if (count <= 0) {
-      leftA.style.visibility = "hidden";
-    }
-
-    if (count <= 4) {
-      rigthA.style.visibility = "visible";
-    }
+    setCount(current => Math.max(current - 1, 0));
   }
 
   return (
     <div>
-      {(movies.length === 0) ?
-      
-        null
-      :
-      <div>
-      <div>{name}</div>
-    <div className='content-simple-carousel'>
-      <button id="low" onClick={previous} className="btnPreviousR">
-      <MdOutlineArrowBackIosNew onClick={previous} id="low2" className='arrows'/>
-      </button>
-      <ul className="list">
-        {movies.map((movie, index) => (
-          <li className="title-item" key={index}>
-            <CardTitle
-              id={movie}
-            />
-          </li>
-        ))}
-      </ul>
-      <button className="btnNextR" id="low" onClick={next}>
-        <MdOutlineArrowForwardIos onClick={next} id="low2" className='arrows'/>
-      </button>
+      {movies.length > 0 && (
+        <div>
+          <div>{name}</div>
+
+          <div className="content-simple-carousel">
+            <button
+              id="low"
+              onClick={previous}
+              className="btnPreviousR"
+              style={{ visibility: count === 0 ? 'hidden' : 'visible' }}
+            >
+              <MdOutlineArrowBackIosNew className="arrows" />
+            </button>
+
+            <ul className="list" ref={carouselRef}>
+              {movies.map((movie, index) => (
+                <li className="title-item" key={movie || index}>
+                  <CardTitle id={movie} />
+                </li>
+              ))}
+            </ul>
+
+            <button
+              className="btnNextR"
+              id="low"
+              onClick={next}
+              style={{ visibility: count >= 5 ? 'hidden' : 'visible' }}
+            >
+              <MdOutlineArrowForwardIos className="arrows" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-    </div>
-    }
-    </div>
-  )
-}
+  );
+};
 
 export default MyList;
