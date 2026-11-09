@@ -19,7 +19,7 @@ function App() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    fetch(`https://brave-red-blazer.cyclic.app/auth/${user}`)
+    fetch(`https://back-singlens.onrender.com//auth/${user}`)
       .then(response => response.json())
       .then(json => json.watchlist)
       .then(async (data) => {
