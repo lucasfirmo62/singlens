@@ -7,6 +7,15 @@ import { removeQuote } from '../../assistant';
 import api from '../../api';
 import { AiOutlineCheck } from 'react-icons/ai';
 
+const avatars = {
+  '1': 'nPO29qu.jpeg',
+  '2': 'oYBkmhj.jpeg',
+  '3': '5Pcx3Vq.jpeg',
+  '4': 'vAP7kdO.jpeg',
+  '5': 'sZyMbsu.jpeg',
+  '6': 'mDLxGQ9.jpeg'
+};
+
 function Profile() {
   const user = removeQuote(localStorage.getItem('IdUser'));
   const userVerify = removeQuote(localStorage.getItem('user'));
@@ -15,15 +24,6 @@ function Profile() {
   const [selectedAvatar, setSelectedAvatar] = useState('1');
   const [newName, setNewName] = useState('');
   const [showNameAlert, setShowNameAlert] = useState(false);
-
-  const avatars = {
-    '1': 'nPO29qu.jpeg',
-    '2': 'oYBkmhj.jpeg',
-    '3': '5Pcx3Vq.jpeg',
-    '4': 'vAP7kdO.jpeg',
-    '5': 'sZyMbsu.jpeg',
-    '6': 'mDLxGQ9.jpeg'
-  };
 
   useEffect(() => {
     if (userVerify.length < 10) {
