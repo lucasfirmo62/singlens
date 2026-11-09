@@ -7,59 +7,80 @@ import { AiOutlinePlus, AiOutlineCheck } from 'react-icons/ai';
 import { IoIosPeople } from 'react-icons/io';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { RxReload } from 'react-icons/rx';
-import api from '../../api';
+
+const API_URL = 'https://back-singlens.onrender.com';
 
 const Watch = () => {
-  const [movieWatch, setMovie] = useState([]);
-  const [userUtility, setUserUtility] = useState([]);
+  const [movieWatch, setMovie] = useState({});
+  const [userUtility, setUserUtility] = useState({
+    resume: [],
+    watchlist: []
+  });
+  const [loadingWatchlist, setLoadingWatchlist] = useState(false);
 
-  const [toogleRemove, setToogleRemove] = useState(true);
-  const [removeMovie, setRemove] = useState(
-    <AiOutlineCheck className="add-list-page" />
-  );
+  const url = window.location.pathname;
+  const position = url.indexOf('watch/');
+  const idMovie = position !== -1
+    ? url.substring(position + 6).split('/')[0]
+    : '';
 
-  useEffect(() => {
-    setRemove(
-      toogleRemove
-        ? <AiOutlineCheck className="add-list-page" />
-        : <AiOutlinePlus className="add-list-page" />
-    );
-  }, [toogleRemove]);
-
-  const [toogleAdd, setToogleAdd] = useState(true);
-  const [addMovie, setAdd] = useState(
-    <AiOutlinePlus className="add-list-page" />
-  );
+  const userVerify = removeQuote(localStorage.getItem('user')) || '';
+  const idUser = removeQuote(localStorage.getItem('IdUser')) || '';
 
   useEffect(() => {
-    setAdd(
-      toogleAdd
-        ? <AiOutlinePlus className="add-list-page" />
-        : <AiOutlineCheck className="add-list-page" />
-    );
-  }, [toogleAdd]);
-
-  const url = window.location.href;
-  const position = url.indexOf("watch/");
-  const idMovie = url.substring(position + 6, position + 106);
-
-  const userVerify = removeQuote(localStorage.getItem('user'));
-
-  const idUser = removeQuote(localStorage.getItem('IdUser'));
-
-  if (userVerify.length < 10) {
-    window.location.replace('/login');
-  }
+    if (userVerify.length < 10) {
+      window.location.replace('/login');
+    }
+  }, [userVerify]);
 
   useEffect(() => {
-    const url = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`;
+    if (!idMovie) return;
 
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
+    const fetchMovie = async () => {
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`
+        );
+
+        if (!response.ok) {
+          throw new Error('Não foi possível carregar o filme.');
+        }
+
+        const data = await response.json();
         setMovie(data);
-      });
+      } catch (error) {
+        console.error('Erro ao carregar filme:', error);
+      }
+    };
+
+    fetchMovie();
   }, [idMovie]);
+
+  useEffect(() => {
+    if (!idUser) return;
+
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`${API_URL}/auth/${idUser}`);
+
+        if (!response.ok) {
+          throw new Error('Não foi possível carregar os dados do usuário.');
+        }
+
+        const data = await response.json();
+
+        setUserUtility({
+          ...data,
+          resume: data.resume || [],
+          watchlist: data.watchlist || []
+        });
+      } catch (error) {
+        console.error('Erro ao carregar usuário:', error);
+      }
+    };
+
+    fetchUser();
+  }, [idUser]);
 
   const timeH = movieWatch.runtime
     ? Math.floor(movieWatch.runtime / 60)
@@ -73,32 +94,16 @@ const Watch = () => {
     ? movieWatch.release_date.substring(0, 4)
     : '';
 
+  const userUtilityResume = userUtility.resume || [];
+  const userUtilityList = userUtility.watchlist || [];
+
+  const isInWatchlist = userUtilityList.includes(idMovie);
+
+  const isInResume = userUtilityResume.some(
+    movieMark => movieMark?.idMovie === idMovie
+  );
+
   function goWatch() {
-    window.location.replace(`/watch-play/${idMovie}`);
-  }
-
-  function reGoWatch() {
-    const arrayResume = userUtility.resume || [];
-    const idmv = idMovie;
-
-    const result = arrayResume.find(
-      movieMark => movieMark.idMovie === idmv
-    );
-
-    const index = arrayResume.indexOf(result);
-
-    if (index > -1) {
-      arrayResume.splice(index, 1);
-    }
-
-    const data = { resume: arrayResume };
-
-    api.post(`/auth/resume/${idUser}`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
     window.location.replace(`/watch-play/${idMovie}`);
   }
 
@@ -106,59 +111,76 @@ const Watch = () => {
     window.location.replace(`/cinewatch/${idMovie}`);
   }
 
-  useEffect(() => {
-    const url = `https://back-singlens.onrender.com/auth/${idUser}`;
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        setUserUtility(data);
-      });
-  }, [idUser]);
-
-  const UserUtilityResume = userUtility.resume;
-  const UserUtilityList = userUtility.watchlist;
-
-  async function setWachlist() {
-    setToogleAdd(stateAdd => !stateAdd);
-    setToogleRemove(stateRMV => !stateRMV);
-
-    const url = `https://back-singlens.onrender.com/auth/${idUser}`;
-
+  async function reGoWatch() {
     try {
-      const response = await fetch(url);
+      const arrayResume = userUtilityResume.filter(
+        movieMark => movieMark?.idMovie !== idMovie
+      );
 
-      if (response.status === 200) {
-        const userContent = await response.json();
-        await add(userContent);
+      const response = await fetch(
+        `${API_URL}/auth/resume/${idUser}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            resume: arrayResume
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Não foi possível atualizar o histórico.');
       }
+
+      setUserUtility(previous => ({
+        ...previous,
+        resume: arrayResume
+      }));
+
+      window.location.replace(`/watch-play/${idMovie}`);
     } catch (error) {
-      console.error('Erro ao acessar a lista:', error);
+      console.error('Erro ao recomeçar filme:', error);
     }
   }
 
-  async function add(userContent) {
-    const arrayWatchlist = userContent.watchlist || [];
+  async function setWachlist() {
+    if (loadingWatchlist) return;
 
-    if (arrayWatchlist.includes(idMovie)) {
-      const index = arrayWatchlist.indexOf(idMovie);
+    setLoadingWatchlist(true);
 
-      if (index > -1) {
-        arrayWatchlist.splice(index, 1);
+    try {
+      const arrayWatchlist = isInWatchlist
+        ? userUtilityList.filter(movie => movie !== idMovie)
+        : [idMovie, ...userUtilityList];
+
+      const response = await fetch(
+        `${API_URL}/auth/watchlist/${idUser}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            watchlist: arrayWatchlist
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Não foi possível atualizar sua lista.');
       }
-    } else {
-      arrayWatchlist.unshift(idMovie);
+
+      setUserUtility(previous => ({
+        ...previous,
+        watchlist: arrayWatchlist
+      }));
+    } catch (error) {
+      console.error('Erro ao atualizar lista:', error);
+    } finally {
+      setLoadingWatchlist(false);
     }
-
-    const data = {
-      watchlist: arrayWatchlist
-    };
-
-    await api.post(`/auth/watchlist/${idUser}`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
   }
 
   return (
@@ -166,11 +188,11 @@ const Watch = () => {
       <div className="background-img">
         {movieWatch.backdrop_path ? (
           <img
-            alt="background"
+            alt="Plano de fundo do filme"
             className="title-content"
             src={`https://image.tmdb.org/t/p/w1280/${movieWatch.backdrop_path}`}
           />
-        ) : ""}
+        ) : ''}
       </div>
 
       <Header />
@@ -182,9 +204,7 @@ const Watch = () => {
           </div>
 
           <div className="buttons-page">
-            {UserUtilityResume?.find(
-              movieMark => movieMark?.idMovie === idMovie
-            ) ? (
+            {isInResume ? (
               <div className="resume-rewatch">
                 <div className="button-watch-continue" onClick={goWatch}>
                   <span>
@@ -241,35 +261,37 @@ const Watch = () => {
         <div className="grade">
           <div className="genres">
             {movieWatch.genres &&
-              movieWatch.genres.map((genre, index) => (
-                <p key={`${genre.id}-${index}`}>
+              movieWatch.genres.map(genre => (
+                <p key={genre.id}>
                   {genre.name}
                 </p>
               ))}
           </div>
         </div>
 
-        {UserUtilityList?.includes(idMovie) === true ? (
-          <div className="watchlist-solo">
-            <div
-              className="button-wachlist-page"
-              onClick={setWachlist}
-              title="Remover da sua Lista"
-            >
-              {removeMovie}
-            </div>
+        <div className="watchlist-solo">
+          <div
+            className="button-wachlist-page"
+            onClick={setWachlist}
+            title={
+              isInWatchlist
+                ? 'Remover da sua Lista'
+                : 'Adicionar à sua Lista'
+            }
+            aria-label={
+              isInWatchlist
+                ? 'Remover da sua Lista'
+                : 'Adicionar à sua Lista'
+            }
+            aria-disabled={loadingWatchlist}
+          >
+            {isInWatchlist ? (
+              <AiOutlineCheck className="add-list-page" />
+            ) : (
+              <AiOutlinePlus className="add-list-page" />
+            )}
           </div>
-        ) : (
-          <div className="watchlist-solo">
-            <div
-              className="button-wachlist-page"
-              onClick={setWachlist}
-              title="Adicionar à sua Lista"
-            >
-              {addMovie}
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
