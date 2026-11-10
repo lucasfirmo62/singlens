@@ -18,11 +18,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [carouselsVisible, setCarouselsVisible] = useState(false);
 
-  if(userVerify == null || user == null){
+  if(userVerify === null || user == null){
     window.location.replace('/sign-up');
   }
 
-  if(user == "ul"){
+  if(user === "ul"){
     window.location.replace('/sign-up');
   }
 
