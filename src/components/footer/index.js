@@ -9,7 +9,7 @@ const Footer = () => {
       </div>
 
       <div className='coll'>
-        <p>Singlens, viva o cinema © Todos os direitos reservados</p>
+        <p>Singlens, viva ao cinema © Todos os direitos reservados</p>
       </div>
 
       <div className='coll'>

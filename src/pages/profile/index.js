@@ -6,6 +6,7 @@ import Footer from '../../components/footer';
 import { removeQuote } from '../../assistant';
 import api from '../../api';
 import { AiOutlineCheck } from 'react-icons/ai';
+import MyList from '../../components/MyList';
 
 const avatars = {
   '1': 'nPO29qu.jpeg',
@@ -134,7 +135,7 @@ function Profile() {
             </center>
 
             <div className="name">
-              Seu nome:
+              Seu apelido:
               <input
                 id="nameSet"
                 type="text"
@@ -149,6 +150,7 @@ function Profile() {
               onClick={updateName}
               className="button-profile"
               aria-label="Salvar nome"
+              alt="Confirmar alteração"
             >
               <AiOutlineCheck />
             </button>
@@ -163,6 +165,7 @@ function Profile() {
               Seu email: {userUtility.email}
             </div>
           </div>
+                  <p>Seu apelido e sua foto ficará visivel para todos no cinema.</p>
         </div>
 
         <div className="avatars-select">
@@ -187,6 +190,14 @@ function Profile() {
             />
           ))}
         </div>
+      </div>
+
+
+      <div className='profile-content-box'>
+        <MyList
+          name="Minha Lista"
+          titles={`https://back-singlens.onrender.com/auth/${user}`}
+        />
       </div>
 
       <Footer />

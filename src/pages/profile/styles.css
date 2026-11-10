@@ -51,9 +51,22 @@
 
 .button-profile {
   position: absolute;
-  padding: 30px;
-  margin-top: -66px;
+  padding: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+  margin-top: -37px;
   margin-left: 260px;
+  border-radius: 90%;
+  border: 2px solid rgba(255, 245, 102, 0);
+  background-color: rgba(240, 248, 255, 0);
+  cursor: pointer;
+  color: rgb(255, 245, 102);
+  transition: 0.3s;
+}
+
+.button-profile:hover{
+    border: 2px solid rgb(255, 245, 102);
+
 }
 
 .button-profile-avatar {
@@ -149,4 +162,13 @@
   color: rgba(233, 56, 56, 0.925);
   font-size: 13px;
   display: none;
+}
+
+.profile-content-box{
+  width: 90%;
+  margin-left: 100px;
+}
+
+div{
+  color: white;
 }

@@ -18,11 +18,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [carouselsVisible, setCarouselsVisible] = useState(false);
 
-  useEffect(() => {
-    if (userVerify.length < 10) {
-      window.location.replace('/login');
-    }
-  }, [userVerify]);
+  if(userVerify == null || user == null){
+    window.location.replace('/sign-up');
+  }
+
+  if(user == "ul"){
+    window.location.replace('/sign-up');
+  }
 
   useEffect(() => {
     const loadingTimer = setTimeout(() => {
@@ -66,12 +68,12 @@ function App() {
 
         <Resume
           name="Continuar Assistindo"
-          titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
+          titles={`https://back-singlens.onrender.com/auth/${user}`}
         />
 
         <MyList
           name="Minha Lista"
-          titles={`https://brave-red-blazer.cyclic.app/auth/${user}`}
+          titles={`https://back-singlens.onrender.com/auth/${user}`}
         />
 
         <SimpleCarouselTitles

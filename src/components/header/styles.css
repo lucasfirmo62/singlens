@@ -15,6 +15,22 @@
     transition: 0.3s;
 }
 
+.header-content h2{
+    position: absolute;
+    margin-left: -30%;
+    margin-top: 11px;
+    color: rgb(255, 245, 102);
+}
+
+.header-content h2 p{
+    position: absolute;
+    margin-left: 110%;
+    width: 110px;
+    margin-top: -20px;
+    color: rgba(255, 255, 255, 0.303);
+    font-size: 14px;
+}
+
 .header-content div{
     padding-left: 40px;
     color: rgb(203, 208, 255);

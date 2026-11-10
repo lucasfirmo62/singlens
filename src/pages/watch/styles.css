@@ -42,13 +42,13 @@ img{
     margin-left: 10%;
 }
 
+
 .button-cinewatch{
+
     transition: 0.3s;
     margin-left: 23%;
     margin-top: 70px;
-}
-
-.button-cinewatch a{
+    width: 110px;
 
     border-left: 2px solid rgba(17, 31, 17, 0);
     border-right: 2px solid rgba(17, 31, 17, 0);
@@ -62,7 +62,7 @@ img{
     font-size: 16px;
 }
 
-.button-cinewatch a:hover{
+.button-cinewatch:hover{
     border-style: solid;
     border-radius: 5px;
     border-left: 2px solid rgb(24, 65, 24);
@@ -159,12 +159,7 @@ img{
     transition: 0.3s;
     margin-left: 23%;
     margin-top: 18px;
-}
-
-
-.button-watch-init a{
-
-    border-left: 2px solid rgba(17, 31, 17, 0);
+        border-left: 2px solid rgba(17, 31, 17, 0);
     border-right: 2px solid rgba(17, 31, 17, 0);
     border-top: 2px solid rgba(17, 31, 17, 0);
     border-bottom: 2px solid rgb(255, 245, 102);
@@ -173,9 +168,12 @@ img{
     cursor: pointer;
     padding: 10px;
     transition: 0.3s;
+    width: 120px;
 }
 
-.button-watch-init a:hover{
+
+
+.button-watch-init:hover{
     border-style: solid;
     border-radius: 5px;
     border-left: 2px solid rgb(255, 245, 102);
@@ -187,7 +185,7 @@ img{
     transition: 0.3s;
 }
 
-.button-watch-init a .play-button-watch-page{
+.button-watch-init .play-button-watch-page{
     margin-left: -10px;
     padding-right: 5px;
     padding-left: 5px;

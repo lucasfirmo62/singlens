@@ -67,6 +67,7 @@ const Header = () => {
 
   return (
     <div className="header-content">
+      <h2>SINGLENS <p>viva ao cinema</p></h2>
       <div>
         <input
           type="text"
