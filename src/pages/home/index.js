@@ -8,6 +8,7 @@ import MyList from '../../components/MyList';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import Resume from '../../components/Resume';
+import SuperCarousel from '../../components/super-carousel';
 
 import { removeQuote } from '../../assistant';
 
@@ -61,6 +62,11 @@ function App() {
         id="carousels"
         style={{ visibility: carouselsVisible ? 'visible' : 'hidden' }}
       >
+        <SuperCarousel
+          name="Destaques"
+          titles="https://api.npoint.io/06d61234c7b5b3b42f79"
+        />
+
         <SimpleCarouselTitles
           name="Acabou de Chegar..."
           titles="https://api.npoint.io/65737b8c3c5f4364b75e"

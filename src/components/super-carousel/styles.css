@@ -1,0 +1,336 @@
+
+/* SUPER CAROUSEL */
+
+.super-carousel {
+    width: 100%;
+    position: relative;
+    padding: 25px 0 35px;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            ellipse at 50% 55%,
+            rgba(255, 190, 65, 0.09),
+            transparent 65%
+        );
+
+    height: 600px;
+}
+
+/* HEADER */
+
+.super-carousel-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 35px;
+    margin-bottom: 5px;
+    height: 80px;
+}
+
+.super-carousel-line {
+    width: 4px;
+    height: 25px;
+    background: rgb(255, 245, 102);
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(255, 245, 102, 0.5);
+}
+
+.super-carousel-heading h2 {
+    color: white;
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* STAGE */
+
+.super-carousel-stage {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+}
+
+/* GALLERY */
+
+.super-carousel-gallery {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+}
+
+/* CARDS */
+
+.super-carousel-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    width: 300px;
+
+    transform-origin: center center;
+
+    transition:
+        transform 0.65s cubic-bezier(0.2, 0.75, 0.25, 1),
+        opacity 0.5s ease,
+        filter 0.5s ease;
+
+    cursor: pointer;
+    border-radius: 13px;
+}
+
+.super-carousel-card-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    border-radius: 13px;
+    background: #171717;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.5);
+
+    transition: box-shadow 0.5s ease;
+}
+
+/* CARD CENTRAL */
+
+.super-carousel-card.center {
+    z-index: 10;
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        translateZ(100px)
+        scale(1.15);
+
+    filter: brightness(1.08);
+}
+
+.super-carousel-card.center .super-carousel-card-inner {
+    padding: 5px;
+    box-shadow:
+        0 0 35px rgba(255, 190, 65, 0.13),
+        0 30px 70px rgba(0, 0, 0, 0.65);
+}
+
+/* CARD LATERAL ESQUERDO */
+
+.super-carousel-card.left-one {
+    z-index: 8;
+    opacity: 0.85;
+
+    transform:
+        translate(-50%, -50%)
+        translateX(-240px)
+        rotateY(24deg)
+        scale(0.88);
+
+    filter: brightness(0.65);
+}
+
+/* CARD LATERAL DIREITO */
+
+.super-carousel-card.right-one {
+    z-index: 8;
+    opacity: 0.85;
+
+    transform:
+        translate(-50%, -50%)
+        translateX(240px)
+        rotateY(-24deg)
+        scale(0.88);
+
+    filter: brightness(0.65);
+}
+
+/* SEGUNDO PLANO */
+
+.super-carousel-card.left-two {
+    z-index: 5;
+    opacity: 0.35;
+
+    transform:
+        translate(-50%, -50%)
+        translateX(-420px)
+        rotateY(35deg)
+        scale(0.68);
+
+    filter: brightness(0.4) blur(1px);
+}
+
+.super-carousel-card.right-two {
+    z-index: 5;
+    opacity: 0.35;
+
+    transform:
+        translate(-50%, -50%)
+        translateX(420px)
+        rotateY(-35deg)
+        scale(0.68);
+
+    filter: brightness(0.4) blur(1px);
+}
+
+/* CARDS FORA DA ÁREA */
+
+.super-carousel-card.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* SETAS */
+
+.super-carousel-button {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+
+    transform: translateY(-50%);
+
+    width: 55px;
+    height: 125px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    cursor: pointer;
+
+    color: rgb(255, 245, 102);
+    font-size: 25px;
+
+    transition: 0.3s ease;
+}
+
+.super-carousel-button.previous {
+    left: 0;
+    margin-left: -10px;
+    padding-right: 15px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.95),
+        rgba(0, 0, 0, 0)
+    );
+}
+
+.super-carousel-button.next {
+    right: 0;
+    margin-right: -10px;
+    padding-left: 15px;
+
+    background: linear-gradient(
+        -90deg,
+        rgba(0, 0, 0, 0.95),
+        rgba(0, 0, 0, 0)
+    );
+}
+
+.super-carousel-button:hover:not(:disabled) {
+    color: white;
+    font-size: 29px;
+}
+
+.super-carousel-button:disabled {
+    opacity: 0;
+    cursor: default;
+}
+
+/* PAGINAÇÃO */
+
+.super-carousel-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+
+    margin-top: 5px;
+
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.super-carousel-progress {
+    width: 120px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.super-carousel-progress div {
+    height: 100%;
+    background: rgb(255, 245, 102);
+    transition: width 0.4s ease;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 768px) {
+
+    .super-carousel-stage {
+        height: 350px;
+    }
+
+    .super-carousel-card {
+        width: 175px;
+        height: 260px;
+    }
+
+    .super-carousel-card.left-one {
+        transform:
+            translate(-50%, -50%)
+            translateX(-135px)
+            rotateY(24deg)
+            scale(0.78);
+    }
+
+    .super-carousel-card.right-one {
+        transform:
+            translate(-50%, -50%)
+            translateX(135px)
+            rotateY(-24deg)
+            scale(0.78);
+    }
+
+    .super-carousel-card.left-two {
+        transform:
+            translate(-50%, -50%)
+            translateX(-230px)
+            rotateY(35deg)
+            scale(0.6);
+    }
+
+    .super-carousel-card.right-two {
+        transform:
+            translate(-50%, -50%)
+            translateX(230px)
+            rotateY(-35deg)
+            scale(0.6);
+    }
+
+    .super-carousel-heading {
+        padding-left: 15px;
+    }
+
+    .super-carousel-heading h2 {
+        font-size: 19px;
+    }
+
+    .super-carousel-button {
+        width: 35px;
+    }
+}
