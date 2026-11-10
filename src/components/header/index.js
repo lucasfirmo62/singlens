@@ -52,6 +52,10 @@ const Header = () => {
     window.location.replace('/profile');
   }
 
+  function goOnOnly(){
+    window.location.replace('/only-u');
+  }
+
   function setSearchChange(value) {
     setSearchTerm(value);
 
@@ -67,7 +71,7 @@ const Header = () => {
 
   return (
     <div className="header-content">
-      <h2>SINGLENS <p>viva ao cinema</p></h2>
+      <h2 onClick={goOn}>SINGLENS <p>viva ao cinema</p></h2>
       <div>
         <input
           type="text"
@@ -83,7 +87,7 @@ const Header = () => {
         <p>Inicio</p>
       </div>
 
-      <div>
+      <div onClick={goOnOnly}>
         <p>Somente para você</p>
       </div>
 

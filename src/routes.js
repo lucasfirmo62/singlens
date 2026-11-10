@@ -10,6 +10,7 @@ import CineWatchVideo from './pages/cineWatch-video';
 import Profile from './pages/profile';
 import Login from './pages/login';
 import SignUp from './pages/sign-up';
+import OnlyYou from './pages/only-you'
 
 
 export default function Router() {
@@ -26,6 +27,7 @@ export default function Router() {
                 <Route path="/profile/" element={<Profile />} />
                 <Route path="/login/" element={<Login />} />
                 <Route path="/sign-up/" element={<SignUp />} />
+                <Route path="/only-u" element={<OnlyYou />} />
             </Routes>
         </BrowserRouter>
     )

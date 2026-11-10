@@ -112,14 +112,8 @@ img{
     border-bottom: 2px solid rgba(255, 255, 255, 0.24);
 }
 
+
 .button-watch-continue{
-    transition: 0.3s;
-    margin-left: 20px;
-    margin-top: 18px;    
-}
-
-
-.button-watch-continue a{
 
     border-left: 2px solid rgba(17, 31, 17, 0);
     border-right: 2px solid rgba(17, 31, 17, 0);
@@ -130,10 +124,14 @@ img{
     cursor: pointer;
     padding: 10px;
     transition: 0.3s;
+
+    transition: 0.3s;
+    margin-left: 20px;
+    margin-top: 18px; 
 }
 
 
-.button-watch-continue a:hover{
+.button-watch-continue:hover{
     border-style: solid;
     border-radius: 5px;
     border-left: 2px solid rgb(255, 245, 102);
