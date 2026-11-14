@@ -237,3 +237,15 @@ img {
     font-size: 19px;
 }
 
+.error-login {
+    display: none;
+    color: rgb(255, 120, 120);
+    font-size: 14px;
+    max-width: 260px;
+    padding: 5px;
+}
+
+.load-error {
+    display: none;
+    padding: 5px;
+}
