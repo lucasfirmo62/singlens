@@ -63,6 +63,8 @@
     background-color: aliceblue;
     padding: 6px;
     border-radius: 4px;
+    margin-left: -50px;
+    width: 250px;
 }
 
 .content-form input::selection {
@@ -73,6 +75,20 @@
     border-top: 2px solid rgb(255, 245, 102);
     border-bottom: 2px solid rgb(255, 245, 102);
     background-color: rgb(67, 148, 67);
+}
+
+.error-login{
+    position: absolute;
+    margin-top: 100px;
+    color: rgba(114, 20, 20, 0.564);
+    margin-left: -94px;
+    display: none;
+}
+
+.load-error{
+    display: none;
+    margin-left: 15px;
+    margin-top: 29px;
 }
 
 .button-login {
@@ -89,6 +105,8 @@
     padding: 10px;
     margin-top: 20px;
     transition: 0.3s;
+    margin-left: -20px;
+    margin-top: 25px;
 }
 
 .button-login:hover {
@@ -101,6 +119,42 @@
     cursor: pointer;
 }
 
+.create-accont-login{
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(240, 248, 255, 0);
+    border-left: 2px solid rgba(17, 31, 17, 0);
+    border-right: 2px solid rgba(17, 31, 17, 0);
+    border-top: 2px solid rgba(17, 31, 17, 0);
+    border-bottom: 2px solid rgb(255, 245, 102);
+
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 40%;
+    margin-left: 0%;
+    transition: 0.3s;
+    z-index: 0;
+    position: absolute;
+}
+
+.create-accont-login:hover{
+    border-style: solid;
+    border-radius: 5px;
+    border-left: 2px solid rgb(255, 245, 102);
+    border-right: 2px solid rgb(255, 245, 102);
+    border-top: 2px solid rgb(255, 245, 102);
+    border-bottom: 2px solid rgb(255, 245, 102);
+    cursor: pointer;
+}
+
+
+.logo-login{
+    position: absolute;
+    margin-top: -10%;
+    margin-left: 0%;
+    color: rgb(255, 245, 102);
+}
 
 
 .background-img {
@@ -182,3 +236,4 @@ img {
     padding-right: 7px;
     font-size: 19px;
 }
+
