@@ -34,6 +34,10 @@ const Login = () => {
         }
     }
 
+    function goCreate() {
+        window.location.replace('/sign-up');
+    }
+
     return (
         <div className="content-login">
             <div className="boxer-login">
@@ -56,6 +60,15 @@ const Login = () => {
                         height="400"
                     />
                 </div>
+
+                <button
+                    className="create-accont-login"
+                    onClick={goCreate}
+                >
+                    CRIAR CONTA
+                </button>
+
+                <h3 className="logo-login">SINGLENS</h3>
 
                 <div className="content-form">
                     <form onSubmit={handleLogin}>
